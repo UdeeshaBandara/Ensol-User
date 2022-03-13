@@ -3,6 +3,7 @@ package rwp.five.buyer.utilities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import rwp.five.buyer.LoginActivity
 
 class SplashScreen : AppCompatActivity() {
 
@@ -11,6 +12,6 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         tinyDB = TinyDB(applicationContext)
 
-
+        startActivity(Intent(this, LoginActivity::class.java))
     }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "732129966007",
+    "project_id": "ensol-30300",
+    "storage_bucket": "ensol-30300.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732129966007:android:ccc6dee6601566639b1a32",
+        "android_client_info": {
+          "package_name": "rwp.five.buyer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "732129966007-3tg8h3o4idha9des9135h1llgaj33k78.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8tW_Z5SIHGlWOxa5juiDW7DFGiZ_V9ac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "732129966007-3tg8h3o4idha9des9135h1llgaj33k78.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
