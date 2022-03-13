@@ -19,7 +19,7 @@ class LoginActivity : AppCompatActivity() {
         }
         btn_login.setOnClickListener {
 
-            startActivity(Intent(this, RegisterActivity::class.java))
+            startActivity(Intent(this, Main::class.java))
         }
 
         getFcmToken()

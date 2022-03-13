@@ -20,9 +20,12 @@
         android:theme="@style/Theme.EnsolUser"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".RegisterActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:name=".Main"
             android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".utilities.SplashScreen"
             android:exported="true"
@@ -37,8 +40,8 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:windowSoftInputMode="adjustPan|adjustResize"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
