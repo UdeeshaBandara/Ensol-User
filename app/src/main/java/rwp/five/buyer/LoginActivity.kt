@@ -22,7 +22,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, Main::class.java))
         }
 
-        getFcmToken()
+//        getFcmToken()
     }
 
     private fun getFcmToken() {

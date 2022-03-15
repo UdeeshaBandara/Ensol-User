@@ -1,39 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/red"
     tools:context=".OrderFragment">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/address"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/account_background"
+        android:elevation="15dp" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+
+        android:background="@drawable/account_top_background"/>
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto_medium"
         android:gravity="center"
         android:paddingVertical="15dp"
         android:text="Account"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/company_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:text="MAS Holdings"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/company_name"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+
+        android:text="No. 23, Biyagama, Kelaniya."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_account"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/address"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginTop="15dp"
         android:clipToPadding="false"
+        android:elevation="16dp"
         android:overScrollMode="never"
         android:paddingBottom="130dp"
         android:scrollbars="none" />
-
-
 
 
 </RelativeLayout>
