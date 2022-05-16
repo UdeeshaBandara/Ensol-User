@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="120dp"
     android:layout_marginHorizontal="15dp"
     android:layout_marginTop="10dp"
     app:cardCornerRadius="15dp"
@@ -12,15 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/contract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:text="Contract Ends on"
+            android:textColor="@color/red"
+            android:textSize="14sp" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_end"
             android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_below="@+id/contract"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="10dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="5dp">
 
@@ -28,32 +43,22 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#8b4f80">
+                android:background="@color/red">
 
 
                 <TextView
-                    android:id="@+id/contract"
+                    android:id="@+id/end_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:gravity="center"
-                    android:text="Contract \nEnds on"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/contract"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="center"
                     android:text="03rd April"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
 
             </RelativeLayout>
@@ -63,36 +68,38 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
-            android:layout_toEndOf="@+id/card_end"
+            android:layout_toStartOf="@+id/card_end"
             android:orientation="vertical">
 
 
             <TextView
+                android:id="@+id/order_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/roboto_medium"
-                android:gravity="center"
-                android:text="Order #"
+                android:gravity="start"
+                android:text="Order #45A21E"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/total"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
                 android:fontFamily="@font/roboto_regular"
-                android:gravity="center"
-                android:text="45A21E"
+                android:gravity="start"
+                android:text="Total : LKR 30,00"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -100,6 +107,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/view_machines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -110,7 +118,7 @@
             android:fontFamily="@font/roboto_regular"
             android:gravity="center"
             android:text="View Machines"
-            android:textColor="#4E97D9"
+            android:textColor="#80000000"
             android:textSize="16sp" />
 
     </RelativeLayout>

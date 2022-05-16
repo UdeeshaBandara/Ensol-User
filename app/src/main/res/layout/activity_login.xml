@@ -65,7 +65,7 @@
 
 
             <EditText
-                android:id="@+id/user_name"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginHorizontal="25dp"
@@ -73,8 +73,8 @@
                 android:background="@drawable/edit_text_background"
                 android:elevation="5dp"
                 android:fontFamily="@font/roboto_regular"
-                android:hint="User name"
-                android:inputType="text"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:paddingHorizontal="10dp"
                 android:textSize="14sp" />
 

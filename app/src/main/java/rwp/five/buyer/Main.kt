@@ -1,24 +1,34 @@
 package rwp.five.buyer
 
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.gson.JsonObject
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import rwp.five.buyer.utilities.ApiInterface
+import rwp.five.buyer.utilities.TinyDB
 
 class Main : AppCompatActivity() {
 
     //Animation duration for bottom navigation
     private var transitionDuration: Long = 300
 
-
+    lateinit var tinyDB: TinyDB
     lateinit var mainFragmentManager: FragmentManager
 
     private val homeFragment: HomeFragment = HomeFragment()
@@ -33,6 +43,9 @@ class Main : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mainFragmentManager = supportFragmentManager
+
+
+        tinyDB = TinyDB(this)
 
         //hide bottom navigation on keyboard appear
         hideOverlay()
@@ -107,6 +120,8 @@ class Main : AppCompatActivity() {
             )
             changeFragment(currentFragments, accountFragment)
         }
+
+
 
     }
 
