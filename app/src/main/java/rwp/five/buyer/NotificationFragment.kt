@@ -1,20 +1,35 @@
 package rwp.five.buyer
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.fragment_notification.*
+import kotlinx.android.synthetic.main.fragment_order.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import rwp.five.buyer.utilities.ApiInterface
+import rwp.five.buyer.utilities.TinyDB
 
 class NotificationFragment : Fragment() {
 
+    var hud: KProgressHUD? = null
+    lateinit var tinyDB: TinyDB
 
+    var notifications = JsonArray()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,48 +41,115 @@ class NotificationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_notification.adapter = HomeAdapter()
+        tinyDB = TinyDB(requireActivity())
+        hud = KProgressHUD.create(requireActivity())
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setCancellable(false)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.5f)
+
+        recycler_notification.adapter = NotificationAdapter()
         recycler_notification.layoutManager = LinearLayoutManager(
             activity?.applicationContext,
             LinearLayoutManager.VERTICAL,
             false
         )
+        getNotifications()
 
     }
-    inner class HomeItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    inner class NotificationHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
         var card_root: CardView = itemView.findViewById(R.id.card_root)
         var title: TextView = itemView.findViewById(R.id.title)
+        var description: TextView = itemView.findViewById(R.id.description)
         var time: TextView = itemView.findViewById(R.id.time)
         var notification_image: RoundedImageView = itemView.findViewById(R.id.notification_image)
 
 
     }
 
-    inner class HomeAdapter : RecyclerView.Adapter<HomeItemHolder>() {
+    inner class NotificationAdapter : RecyclerView.Adapter<NotificationHolder>() {
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-        ): HomeItemHolder {
+        ): NotificationHolder {
 
             val view: View = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_notification, parent, false)
 
-            return HomeItemHolder(view)
+            return NotificationHolder(view)
         }
 
         override fun getItemCount(): Int {
 
-            return 13
+            return notifications.size()
         }
 
 
-        override fun onBindViewHolder(holder: HomeItemHolder, position: Int) {
+        override fun onBindViewHolder(holder: NotificationHolder, position: Int) {
 
-
+            val jsonObject =
+                JsonParser().parse(notifications.get(position).asJsonObject.get("content").asString) as JsonObject
+            holder.title.text = jsonObject.get("title").asString
+            holder.description.text = jsonObject.get("description").asString
+            holder.time.text = jsonObject.get("createdAt").asString
         }
 
+    }
+
+    private fun getNotifications() {
+
+        showHUD()
+
+        val apiInterface: Call<JsonObject> = ApiInterface.create().getNotifications(
+            "Bearer ${tinyDB.getString("token")}"
+        )
+
+        apiInterface.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
+            ) {
+                hideHUD()
+
+                response.body()?.let {
+
+
+                    if (it.get("status").asBoolean) {
+
+                        notifications = it.getAsJsonArray("data")
+                        recycler_orders.adapter?.notifyDataSetChanged()
+
+                    } else
+                        Toast.makeText(
+                            requireContext(),
+                            it.get("data").asString,
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("fail", t.message.toString())
+            }
+        })
+    }
+
+    private fun showHUD() {
+        if (hud!!.isShowing) {
+            hud!!.dismiss()
+        }
+        hud!!.show()
+    }
+
+    private fun hideHUD() {
+        if (hud!!.isShowing) {
+            hud!!.dismiss()
+        }
     }
 }

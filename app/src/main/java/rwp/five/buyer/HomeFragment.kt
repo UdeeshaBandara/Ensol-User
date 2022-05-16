@@ -1,5 +1,7 @@
 package rwp.five.buyer
 
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,20 +14,28 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.makeramen.roundedimageview.RoundedImageView
+import kotlinx.android.synthetic.main.bottom_sheet_cart.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import rwp.five.buyer.room.model.CartProduct
 import rwp.five.buyer.utilities.ApiInterface
+import rwp.five.buyer.utilities.CoreApp.Companion.cartDao
 import rwp.five.buyer.utilities.TinyDB
+import java.util.*
 
 
 class HomeFragment : Fragment() {
@@ -33,7 +43,10 @@ class HomeFragment : Fragment() {
     lateinit var tinyDB: TinyDB
 
     var machines = JsonArray()
+    var selectedMachine = JsonObject()
     var hud: KProgressHUD? = null
+    lateinit var selectedDate: TextView
+    lateinit var productBottomSheet: ProductBottomSheet
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +103,12 @@ class HomeFragment : Fragment() {
 
     }
 
+    fun openBottomSheet() {
+        productBottomSheet = ProductBottomSheet(activity)
+        productBottomSheet.setContentView(R.layout.bottom_sheet_cart)
+        productBottomSheet.show()
+    }
+
     inner class TopSellingAdapter : RecyclerView.Adapter<TopSellingItemHolder>() {
 
         override fun onCreateViewHolder(
@@ -123,6 +142,11 @@ class HomeFragment : Fragment() {
 
                     ).fitCenter()
                     .into(holder.machine_image)
+
+            holder.card_root.setOnClickListener {
+                selectedMachine = machines.get(position).asJsonObject
+                openBottomSheet()
+            }
 
         }
 
@@ -172,6 +196,152 @@ class HomeFragment : Fragment() {
                     ).fitCenter()
                     .into(holder.machine_image)
 
+            holder.card_root.setOnClickListener {
+                selectedMachine = machines.get(position).asJsonObject
+                openBottomSheet()
+            }
+
+
+        }
+
+    }
+
+    inner class ProductBottomSheet(context: Context?) :
+        BottomSheetDialog(context!!) {
+
+        var quantity = 1
+        var noOfDays = 1
+        var totalPrice = 0.0
+        var price = 0.0
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+
+            name.text = selectedMachine.get("machineType").asString
+            description.text = selectedMachine.get("description").asString
+            price = selectedMachine.get("rentPrice").asDouble
+            selectedDate = findViewById(R.id.selected_date)!!
+            date.setOnClickListener { showDatePicker() }
+            add_to_cart.setOnClickListener {
+                if (selectedDate.visibility == View.GONE)
+                    Toast.makeText(
+                        requireActivity(),
+                        "Please select contract date",
+                        Toast.LENGTH_LONG
+                    ).show()
+                else
+                    addToCart(quantity)
+            }
+            minus.setOnClickListener {
+                if (quantity > 1)
+                    txt_qty.text = (--quantity).toString()
+                totalPrice = quantity * noOfDays * price
+
+            }
+            plus.setOnClickListener {
+                if (quantity < selectedMachine.get("availableQty").asInt)
+                    txt_qty.text = (++quantity).toString()
+
+                totalPrice = quantity * noOfDays * price
+
+            }
+        }
+    }
+
+    fun showDatePicker() {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+
+        val dpd = DatePickerDialog(
+            requireActivity(),
+            { _, year, monthOfYear, dayOfMonth ->
+                selectedDate.visibility = View.VISIBLE
+
+                val month = if ((monthOfYear + 1) < 10)
+                    String.format("%02d", monthOfYear + 1)
+                else
+                    (monthOfYear + 1).toString()
+
+                selectedDate.text =
+                    year.toString() + "-" + month + "-" + dayOfMonth.toString()
+
+            },
+            year,
+            month,
+            day
+        )
+        dpd.datePicker.minDate = System.currentTimeMillis()
+
+        dpd.show()
+    }
+
+    private fun addToCart(quantity: Int) {
+
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (cartDao?.checkItemExist(
+                    selectedMachine.get(
+                        "id"
+                    ).asInt
+                ) == 0
+            ) {
+
+                cartDao?.insertAll(
+                    CartProduct(
+                        productId = selectedMachine.get(
+                            "id"
+                        ).asInt,
+                        productTitle = selectedMachine.get(
+                            "machineType"
+                        ).asString,
+                        productImage = selectedMachine.get(
+                            "images"
+                        ).asString,
+                        productContract = selectedDate.text.toString(),
+                        productPrice = selectedMachine.get(
+                            "rentPrice"
+                        ).asDouble,
+                        quantity = quantity
+
+                    )
+                )
+
+
+            } else
+                cartDao?.updateQuantityByGivenValue(
+                    selectedMachine.get(
+                        "id"
+                    ).asInt,
+                    quantity,
+                    selectedDate.text.toString()
+                )
+
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                var subTotal = 0.0
+//                model.cartItems.postValue(cartDao?.getAll()!!)
+//
+//                cartDao?.getAll()!!.forEach { item ->
+//                    subTotal += item.productPrice?.times(item.quantity!!)!!
+//                    model.subTotal.postValue(subTotal)
+//                    model.total.postValue(subTotal)
+//
+//
+//                }
+//            }
+
+            activity?.runOnUiThread {
+
+                Toast.makeText(
+                    requireActivity(),
+                    "Your product has been added to cart",
+                    Toast.LENGTH_LONG
+                ).show()
+
+
+            }
         }
 
     }

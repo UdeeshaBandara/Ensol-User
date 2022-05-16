@@ -45,6 +45,11 @@ interface ApiInterface {
         @Header("Authorization") token: String
     ): Call<JsonObject>
 
+    @GET("user/notification")
+    fun getNotifications(
+        @Header("Authorization") token: String
+    ): Call<JsonObject>
+
     companion object {
 
         private val BASE_URL = "https://ensolapi.herokuapp.com/"
