@@ -105,6 +105,7 @@ class LoginActivity : AppCompatActivity() {
                     if (it.get("status").asBoolean) {
                         tinyDB.putString("token", it.get("accessToken").asString)
                         tinyDB.putBoolean("isLogged", true)
+                        tinyDB.putBoolean("isEmptyCart", true)
                         startActivity(Intent(applicationContext, Main::class.java))
                         finishAffinity()
                     } else

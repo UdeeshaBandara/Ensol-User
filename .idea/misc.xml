@@ -16,21 +16,23 @@
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/shadow.xml" value="0.22552083333333334" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/top_selling_background.xml" value="0.22552083333333334" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/top_selling_text_background.xml" value="0.22552083333333334" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_cart.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_home.xml" value="0.20615384615384616" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_main.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_register.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/bottom_sheet_cart.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_account.xml" value="0.20185185185185187" />
-        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_home.xml" value="0.20615384615384616" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_notification.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_order.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_account.xml" value="0.209375" />
-        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_cart.xml" value="0.209375" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_cart.xml" value="0.5" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_current_order.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_home.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_notification.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/item_top_selling.xml" value="0.25" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/popup_date_picker.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/popup_view_machines.xml" value="0.1140625" />
       </map>
     </option>

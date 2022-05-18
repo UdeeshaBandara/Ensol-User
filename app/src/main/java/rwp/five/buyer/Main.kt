@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
@@ -14,13 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import rwp.five.buyer.utilities.ApiInterface
 import rwp.five.buyer.utilities.TinyDB
 
 class Main : AppCompatActivity() {
@@ -35,7 +28,7 @@ class Main : AppCompatActivity() {
     private val orderFragment: OrderFragment = OrderFragment()
     private val notificationFragment: NotificationFragment = NotificationFragment()
     private val accountFragment: AccountFragment = AccountFragment()
-    private var currentFragments : Fragment = homeFragment
+    private var currentFragments: Fragment = homeFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,6 +114,16 @@ class Main : AppCompatActivity() {
             changeFragment(currentFragments, accountFragment)
         }
 
+        cart.setOnClickListener {
+            if (tinyDB.getBoolean("isEmptyCart"))
+                Toast.makeText(
+                    this,
+                    "No products available in your cart!!",
+                    Toast.LENGTH_LONG
+                ).show()
+            else
+                startActivity(Intent(this, CartActivity::class.java))
+        }
 
 
     }
@@ -162,6 +165,7 @@ class Main : AppCompatActivity() {
 
 
     }
+
     private fun hideOverlay() {
         rlt_root.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
@@ -190,9 +194,11 @@ class Main : AppCompatActivity() {
         }
     }
 
-    private fun changeFragment(currentFragment : Fragment,nextFragment : Fragment){
+    private fun changeFragment(currentFragment: Fragment, nextFragment: Fragment) {
 
-        mainFragmentManager.beginTransaction().hide(mainFragmentManager.findFragmentByTag(currentFragment.javaClass.name)!!).show(mainFragmentManager.findFragmentByTag(nextFragment.javaClass.name)!!).commit()
+        mainFragmentManager.beginTransaction()
+            .hide(mainFragmentManager.findFragmentByTag(currentFragment.javaClass.name)!!)
+            .show(mainFragmentManager.findFragmentByTag(nextFragment.javaClass.name)!!).commit()
         currentFragments = nextFragment
 
     }

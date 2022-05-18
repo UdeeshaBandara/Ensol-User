@@ -46,6 +46,19 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/price_per_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_bold"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -209,7 +222,6 @@
                         android:ellipsize="end"
                         android:fontFamily="@font/roboto_regular"
                         android:maxLines="1"
-                        android:text="1 item to cart"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
 
@@ -220,7 +232,6 @@
                         android:ellipsize="end"
                         android:fontFamily="@font/roboto_medium"
                         android:maxLines="1"
-                        android:text="LKR 5500.00"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 

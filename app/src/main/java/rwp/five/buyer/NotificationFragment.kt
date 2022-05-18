@@ -54,7 +54,7 @@ class NotificationFragment : Fragment() {
             LinearLayoutManager.VERTICAL,
             false
         )
-        getNotifications()
+//        getNotifications()
 
     }
 

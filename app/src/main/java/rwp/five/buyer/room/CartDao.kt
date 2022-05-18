@@ -27,11 +27,16 @@ interface CartDao {
     @Query("UPDATE CartItem SET quantity = quantity + 1 WHERE product_id = :productId")
     fun increaseQuantityByOne(productId: Int): Int
 
-    @Query("UPDATE CartItem SET quantity = quantity + :quantity , product_contract = :contractDate WHERE product_id = :productId")
-    fun updateQuantityByGivenValue(productId: Int, quantity: Int, contractDate : String): Int
+    @Query("UPDATE CartItem SET quantity = quantity + :quantity , product_contract_start = :productContractStart,product_contract_end = :productContractEnd WHERE product_id = :productId")
+    fun updateQuantityByGivenValue(
+        productId: Int,
+        quantity: Int,
+        productContractStart: String,
+        productContractEnd: String
+    ): Int
 
-    @Query("UPDATE CartItem SET product_contract = :contractDate WHERE product_id = :productId")
-    fun updateContractByGivenValue(productId: Int, contractDate: String): Int
+//    @Query("UPDATE CartItem SET product_contract = :contractDate WHERE product_id = :productId")
+//    fun updateContractByGivenValue(productId: Int, contractDate: String): Int
 
     @Query("SELECT COUNT(*) FROM CartItem WHERE product_id = :productId")
     fun checkItemExist(productId: Int): Int

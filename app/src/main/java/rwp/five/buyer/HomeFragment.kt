@@ -1,13 +1,17 @@
 package rwp.five.buyer
 
-import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
@@ -24,6 +28,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.makeramen.roundedimageview.RoundedImageView
+import dev.joshhalvorson.calendar_date_range_picker.calendar.CalendarPicker
 import kotlinx.android.synthetic.main.bottom_sheet_cart.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +39,13 @@ import retrofit2.Response
 import rwp.five.buyer.room.model.CartProduct
 import rwp.five.buyer.utilities.ApiInterface
 import rwp.five.buyer.utilities.CoreApp.Companion.cartDao
+import rwp.five.buyer.utilities.CoreApp.Companion.getDateFromTimestamp
+import rwp.five.buyer.utilities.CoreApp.Companion.getNoOfDays
 import rwp.five.buyer.utilities.TinyDB
+import java.lang.String
+import java.sql.Timestamp
+import java.time.Instant
+import java.time.ZoneId
 import java.util.*
 
 
@@ -46,7 +57,14 @@ class HomeFragment : Fragment() {
     var selectedMachine = JsonObject()
     var hud: KProgressHUD? = null
     lateinit var selectedDate: TextView
+    lateinit var cartItemPrice: TextView
     lateinit var productBottomSheet: ProductBottomSheet
+    var contractStart = ""
+    var contractEnd = ""
+    var quantity = 1
+    var noOfDays = 1
+    var totalPrice = 0.0
+    var unitPrice = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -132,7 +150,11 @@ class HomeFragment : Fragment() {
             holder.machine_title.text =
                 machines.get(position).asJsonObject.get("machineType").asString
             holder.machine_price.text =
-                "LKR " + machines.get(position).asJsonObject.get("rentPrice").asString
+                "LKR " +
+                        String.format(
+                            "%.2f",
+                            machines.get(position).asJsonObject.get("rentPrice").asDouble
+                        )
             val jsonArray =
                 JsonParser().parse(machines.get(position).asJsonObject.get("images").asString) as JsonArray
             if (jsonArray.size() > 0)
@@ -185,7 +207,14 @@ class HomeFragment : Fragment() {
             holder.machine_title.text =
                 machines.get(position).asJsonObject.get("machineType").asString
             holder.machine_price.text =
-                "LKR " + machines.get(position).asJsonObject.get("rentPrice").asString
+
+                "LKR " +
+                        String.format(
+                            "%.2f",
+                            machines.get(position).asJsonObject.get("rentPrice").asDouble
+                        )
+
+
             val jsonArray =
                 JsonParser().parse(machines.get(position).asJsonObject.get("images").asString) as JsonArray
             if (jsonArray.size() > 0)
@@ -206,22 +235,41 @@ class HomeFragment : Fragment() {
 
     }
 
+
     inner class ProductBottomSheet(context: Context?) :
         BottomSheetDialog(context!!) {
 
-        var quantity = 1
-        var noOfDays = 1
-        var totalPrice = 0.0
-        var price = 0.0
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
+            quantity = 1
+            noOfDays = 1
+            totalPrice = 0.0
+            unitPrice = 0.0
+            selectedDate = findViewById(R.id.selected_date)!!
+            cartItemPrice = findViewById(R.id.cart_item_price)!!
+
             name.text = selectedMachine.get("machineType").asString
             description.text = selectedMachine.get("description").asString
-            price = selectedMachine.get("rentPrice").asDouble
-            selectedDate = findViewById(R.id.selected_date)!!
+            unitPrice = selectedMachine.get("rentPrice").asDouble
+
+            totalPrice = quantity * noOfDays * unitPrice
+
+            cart_qty.text = quantity.toString() + " Items to cart"
+
+            price_per_day.text = "LKR " + String.format(
+                "%.2f",
+                selectedMachine.get("rentPrice").asDouble
+            ) + " per day"
+            cart_item_price.text = "LKR " + String.format(
+                "%.2f",
+                totalPrice
+            )
+
+
             date.setOnClickListener { showDatePicker() }
+
             add_to_cart.setOnClickListener {
                 if (selectedDate.visibility == View.GONE)
                     Toast.makeText(
@@ -235,48 +283,121 @@ class HomeFragment : Fragment() {
             minus.setOnClickListener {
                 if (quantity > 1)
                     txt_qty.text = (--quantity).toString()
-                totalPrice = quantity * noOfDays * price
-
+                totalPrice = quantity * noOfDays * unitPrice
+                cart_item_price.text = "LKR " + String.format(
+                    "%.2f",
+                    totalPrice
+                )
+                cart_qty.text = quantity.toString() + " Items to cart"
             }
             plus.setOnClickListener {
                 if (quantity < selectedMachine.get("availableQty").asInt)
                     txt_qty.text = (++quantity).toString()
 
-                totalPrice = quantity * noOfDays * price
-
+                totalPrice = quantity * noOfDays * unitPrice
+                cart_item_price.text = "LKR " + String.format(
+                    "%.2f",
+                    totalPrice
+                )
+                cart_qty.text = quantity.toString() + " Items to cart"
             }
         }
     }
 
     fun showDatePicker() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.popup_date_picker)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 
-        val dpd = DatePickerDialog(
-            requireActivity(),
-            { _, year, monthOfYear, dayOfMonth ->
-                selectedDate.visibility = View.VISIBLE
+        val calendarPicker: CalendarPicker = dialog.findViewById(R.id.calendarPicker)
+        val btnConfirm: Button = dialog.findViewById(R.id.btn_confirm)
 
-                val month = if ((monthOfYear + 1) < 10)
-                    String.format("%02d", monthOfYear + 1)
-                else
-                    (monthOfYear + 1).toString()
+        if (selectedDate.visibility == View.VISIBLE) {
+            val from = Instant.ofEpochSecond(contractStart.toLong())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
+            val to = Instant.ofEpochSecond(contractEnd.toLong())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
 
-                selectedDate.text =
-                    year.toString() + "-" + month + "-" + dayOfMonth.toString()
+            calendarPicker.setFirstSelectedDate(
+                year = from.year,
+                month = from.monthValue+1,
+                day = from.dayOfMonth
+            )
+            calendarPicker.setSecondSelectedDate(year = to.year, month = to.monthValue+1, day = to.dayOfMonth)
+        }
+        calendarPicker.initCalendar()
 
-            },
-            year,
-            month,
-            day
-        )
-        dpd.datePicker.minDate = System.currentTimeMillis()
+        btnConfirm.setOnClickListener {
+            try {
+                val selectedDates = calendarPicker.getSelectedDates()
 
-        dpd.show()
+
+                if (selectedDates != null) {
+                    val firstDate = selectedDates.first.toString()
+                    val secondDate = selectedDates.second.toString()
+                    totalPrice = 0.0
+                    selectedDate.visibility = View.VISIBLE
+                    contractStart = firstDate
+                    contractEnd = secondDate
+                    selectedDate.text =
+                        "From ${firstDate.getDateFromTimestamp()} To ${secondDate.getDateFromTimestamp()}"
+                    noOfDays = getNoOfDays(
+                        secondDate.toLong(),
+                        firstDate.toLong()
+                    )
+                    totalPrice = quantity * noOfDays * unitPrice
+                    cartItemPrice.text = "LKR " + String.format(
+                        "%.2f",
+                        totalPrice
+                    )
+
+                }
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
     }
+
+//    fun showDatePicker() {
+//        val c = Calendar.getInstance()
+//        val year = c.get(Calendar.YEAR)
+//        val month = c.get(Calendar.MONTH)
+//        val day = c.get(Calendar.DAY_OF_MONTH)
+//
+//
+//        val dpd = DatePickerDialog(
+//            requireActivity(),
+//            { _, year, monthOfYear, dayOfMonth ->
+//                selectedDate.visibility = View.VISIBLE
+//
+//                val month = if ((monthOfYear + 1) < 10)
+//                    String.format("%02d", monthOfYear + 1)
+//                else
+//                    (monthOfYear + 1).toString()
+//
+//                selectedDate.text =
+//                    year.toString() + "-" + month + "-" + dayOfMonth.toString()
+//
+//            },
+//            year,
+//            month,
+//            day
+//        )
+//        dpd.datePicker.minDate = System.currentTimeMillis()
+//
+//        dpd.show()
+//    }
 
     private fun addToCart(quantity: Int) {
 
@@ -300,7 +421,8 @@ class HomeFragment : Fragment() {
                         productImage = selectedMachine.get(
                             "images"
                         ).asString,
-                        productContract = selectedDate.text.toString(),
+                        productContractStart = contractStart,
+                        productContractEnd = contractEnd,
                         productPrice = selectedMachine.get(
                             "rentPrice"
                         ).asDouble,
@@ -316,7 +438,8 @@ class HomeFragment : Fragment() {
                         "id"
                     ).asInt,
                     quantity,
-                    selectedDate.text.toString()
+                    contractStart,
+                    contractEnd
                 )
 
 //            lifecycleScope.launch(Dispatchers.IO) {
@@ -342,6 +465,7 @@ class HomeFragment : Fragment() {
 
 
             }
+            tinyDB.putBoolean("isEmptyCart", false)
         }
 
     }

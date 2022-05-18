@@ -12,7 +12,8 @@ data class CartProduct  (
     @ColumnInfo(name = "product_id") val productId: Int?,
     @ColumnInfo(name = "product_title") val productTitle: String?,
     @ColumnInfo(name = "product_image") val productImage: String?,
-    @ColumnInfo(name = "product_contract") val productContract: String?,
+    @ColumnInfo(name = "product_contract_start") var productContractStart: String?,
+    @ColumnInfo(name = "product_contract_end") var productContractEnd: String?,
     @ColumnInfo(name = "product_price") val productPrice: Double?,
     @ColumnInfo(name = "quantity") var quantity: Int?
 ) : Serializable

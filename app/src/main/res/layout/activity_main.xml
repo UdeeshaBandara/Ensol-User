@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlt_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rlt_root"
     android:background="@color/white"
     tools:context=".Main">
 
@@ -12,6 +13,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cart"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="15dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/red">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/fast_cart" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <View
         android:id="@+id/bottom_shadow"
@@ -27,9 +51,9 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginBottom="40dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="20dp"
-        android:layout_alignParentBottom="true">
+        android:layout_marginBottom="40dp">
 
 
         <RelativeLayout
@@ -134,8 +158,8 @@
                             android:id="@+id/img_selected"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="8dp"
                             android:layout_centerInParent="true"
+                            android:padding="8dp"
                             android:src="@drawable/home_select" />
 
                     </RelativeLayout>

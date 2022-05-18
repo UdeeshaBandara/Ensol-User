@@ -12,14 +12,6 @@ import retrofit2.http.POST
 
 interface ApiInterface {
 
-
-//
-//    @GET("auth")
-//    fun login(
-//        @Header("Authorization") token: String,
-//        @Path("page") page: String,
-//    ): Call<JsonObject>
-
     @POST("auth")
     fun login(
         @Body postDetails: HashMap<String, String>
@@ -50,9 +42,18 @@ interface ApiInterface {
         @Header("Authorization") token: String
     ): Call<JsonObject>
 
+
+    @POST("order")
+    fun placeAnOrder(
+        @Header("Authorization") token: String,
+        @Body postDetails: HashMap<String, Any>
+    ): Call<JsonObject>
+
+
     companion object {
 
         private val BASE_URL = "https://ensolapi.herokuapp.com/"
+//        private val BASE_URL = "http://192.168.1.3:3000/"
 
         fun create(): ApiInterface {
 

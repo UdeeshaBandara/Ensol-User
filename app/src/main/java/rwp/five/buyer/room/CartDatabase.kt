@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import rwp.five.buyer.room.model.CartProduct
 
-@Database(entities = [CartProduct::class], exportSchema = false, version = 1)
+@Database(entities = [CartProduct::class], exportSchema = false, version = 2)
 abstract class CartDatabase : RoomDatabase() {
 
 
