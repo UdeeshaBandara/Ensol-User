@@ -5,10 +5,7 @@ import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ApiInterface {
 
@@ -16,9 +13,17 @@ interface ApiInterface {
     fun login(
         @Body postDetails: HashMap<String, String>
     ): Call<JsonObject>
+    @POST("user/OTP")
+    fun requestOTP(
+        @Body postDetails: HashMap<String, String>
+    ): Call<JsonObject>
 
     @POST("user")
     fun register(
+        @Body postDetails: HashMap<String, String>
+    ): Call<JsonObject>
+    @POST("/user/resetPassword")
+    fun updateUser(
         @Body postDetails: HashMap<String, String>
     ): Call<JsonObject>
 

@@ -55,18 +55,7 @@ class CoreApp : Application() {
 
         }
 
-        fun showHUD() {
-            if (hud!!.isShowing) {
-                hud!!.dismiss()
-            }
-            hud!!.show()
-        }
 
-        fun hideHUD() {
-            if (hud!!.isShowing) {
-                hud!!.dismiss()
-            }
-        }
 
     }
 }

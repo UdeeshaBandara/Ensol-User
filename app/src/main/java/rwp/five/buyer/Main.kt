@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import rwp.five.buyer.utilities.TinyDB
 
 class Main : AppCompatActivity() {
@@ -179,7 +180,7 @@ class Main : AppCompatActivity() {
                     View.INVISIBLE
                 bottom_navigation.visibility =
                     View.INVISIBLE
-
+                (mainFragmentManager.findFragmentByTag( homeFragment.javaClass.name) as HomeFragment).top_products.visibility = View.GONE
 
             } else {
 
@@ -187,7 +188,7 @@ class Main : AppCompatActivity() {
                     View.VISIBLE
                 bottom_navigation.visibility =
                     View.VISIBLE
-
+                (mainFragmentManager.findFragmentByTag( homeFragment.javaClass.name) as HomeFragment).top_products.visibility = View.VISIBLE
 
             }
 

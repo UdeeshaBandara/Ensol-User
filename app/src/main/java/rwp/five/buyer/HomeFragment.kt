@@ -5,17 +5,17 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import android.widget.TextView.OnEditorActionListener
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -29,6 +29,7 @@ import com.google.gson.JsonParser
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.makeramen.roundedimageview.RoundedImageView
 import dev.joshhalvorson.calendar_date_range_picker.calendar.CalendarPicker
+import kotlinx.android.synthetic.main.activity_otp.*
 import kotlinx.android.synthetic.main.bottom_sheet_cart.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,6 @@ import rwp.five.buyer.utilities.CoreApp.Companion.getDateFromTimestamp
 import rwp.five.buyer.utilities.CoreApp.Companion.getNoOfDays
 import rwp.five.buyer.utilities.TinyDB
 import java.lang.String
-import java.sql.Timestamp
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
 
     var topMachines = JsonArray()
     var machines = JsonArray()
+    var originalMachinesList = JsonArray()
     var selectedMachine = JsonObject()
     var hud: KProgressHUD? = null
     lateinit var selectedDate: TextView
@@ -86,14 +87,8 @@ class HomeFragment : Fragment() {
             .setDimAmount(0.5f)
 
 
-        search.setOnEditorActionListener(OnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//                performSearch()
-                Toast.makeText(requireActivity(), "Searched", Toast.LENGTH_LONG).show()
-                return@OnEditorActionListener true
-            }
-            false
-        })
+
+
 
 
         recycler_top_selling.adapter = TopSellingAdapter()
@@ -102,12 +97,42 @@ class HomeFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        recycler_home.adapter = HomeAdapter()
+        val homeAdapter = HomeAdapter()
+        recycler_home.adapter = homeAdapter
         recycler_home.layoutManager = LinearLayoutManager(
             activity?.applicationContext,
             LinearLayoutManager.VERTICAL,
             false
         )
+        search.setOnEditorActionListener(OnEditorActionListener { searchTextView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                homeAdapter.filter.filter(searchTextView.text.toString())
+
+                return@OnEditorActionListener true
+            }
+            false
+        })
+        search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+                homeAdapter.filter.filter(charSequence.toString())
+            }
+
+            override fun afterTextChanged(editable: Editable) {}
+        })
         getMachines()
     }
 
@@ -184,7 +209,7 @@ class HomeFragment : Fragment() {
         var machine_image: RoundedImageView = itemView.findViewById(R.id.machine_image)
     }
 
-    inner class HomeAdapter : RecyclerView.Adapter<HomeItemHolder>() {
+    inner class HomeAdapter : RecyclerView.Adapter<HomeItemHolder>(), Filterable {
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -234,6 +259,41 @@ class HomeFragment : Fragment() {
 
         }
 
+        override fun getFilter(): Filter {
+            return searchedFilter
+        }
+
+        private val searchedFilter: Filter = object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filteredList = JsonArray()
+                if (constraint == null || constraint.isEmpty()) {
+                    filteredList.addAll(originalMachinesList)
+                } else {
+                    val filterPattern = constraint.toString().toLowerCase().trim { it <= ' ' }
+
+                    machines.forEach {
+
+                        if (it.asJsonObject.get("machineType").asString.toLowerCase()
+                                .contains(filterPattern) || it.asJsonObject.get("rentPrice").asString.toLowerCase()
+                                .contains(filterPattern) || it.asJsonObject.get("description").asString.toLowerCase()
+                                .contains(filterPattern)
+                        )
+                            filteredList.add(it)
+                    }
+
+                }
+                val results = FilterResults()
+                results.values = filteredList
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults) {
+                machines = JsonArray()
+                machines.addAll(results.values as JsonArray)
+                notifyDataSetChanged()
+            }
+        }
+
     }
 
 
@@ -267,7 +327,6 @@ class HomeFragment : Fragment() {
                 "%.2f",
                 totalPrice
             )
-
 
 
             val jsonArray =
@@ -338,10 +397,14 @@ class HomeFragment : Fragment() {
 
             calendarPicker.setFirstSelectedDate(
                 year = from.year,
-                month = from.monthValue+1,
+                month = from.monthValue + 1,
                 day = from.dayOfMonth
             )
-            calendarPicker.setSecondSelectedDate(year = to.year, month = to.monthValue+1, day = to.dayOfMonth)
+            calendarPicker.setSecondSelectedDate(
+                year = to.year,
+                month = to.monthValue + 1,
+                day = to.dayOfMonth
+            )
         }
         calendarPicker.initCalendar()
 
@@ -463,6 +526,7 @@ class HomeFragment : Fragment() {
 
                         topMachines = it.getAsJsonObject("data").getAsJsonArray("top_machines")
                         machines = it.getAsJsonObject("data").getAsJsonArray("machines")
+                        originalMachinesList = it.getAsJsonObject("data").getAsJsonArray("machines")
                         recycler_home.adapter?.notifyDataSetChanged()
                         recycler_top_selling.adapter?.notifyDataSetChanged()
 
@@ -495,5 +559,6 @@ class HomeFragment : Fragment() {
             hud!!.dismiss()
         }
     }
+
 
 }

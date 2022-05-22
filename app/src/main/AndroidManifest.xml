@@ -21,6 +21,12 @@
         android:theme="@style/Theme.EnsolUser"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".NewPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OTPActivity"
+            android:exported="false" />
+        <activity
             android:name=".ViewRepairActivity"
             android:exported="false" />
         <activity

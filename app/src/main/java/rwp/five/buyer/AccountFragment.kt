@@ -16,15 +16,19 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
 import com.kaopiz.kprogresshud.KProgressHUD
 import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import rwp.five.buyer.utilities.ApiInterface
+import rwp.five.buyer.utilities.CoreApp.Companion.cartDao
 import rwp.five.buyer.utilities.TinyDB
 
 class AccountFragment : Fragment() {
@@ -187,6 +191,10 @@ class AccountFragment : Fragment() {
 
                     if (it.get("status").asBoolean) {
 
+                        tinyDB.clear()
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            cartDao?.clearCart()
+                        }
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))
                         requireActivity().finishAffinity()
 

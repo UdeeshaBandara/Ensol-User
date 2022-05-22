@@ -225,7 +225,8 @@ class CartActivity : AppCompatActivity() {
                         )
                     }
                     cartItems.removeAt(position)
-                    recycler_cart.adapter?.notifyItemChanged(position)
+                    recycler_cart.adapter?.notifyItemRemoved(position)
+
                     if (cartItems.size == 0) {
                         tinyDB.putBoolean("isEmptyCart", true)
                         finish()

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -54,6 +55,11 @@ class RegisterActivity : AppCompatActivity() {
                 TextUtils.isEmpty(email.text.toString()) -> Toast.makeText(
                     this,
                     "Please enter your email",
+                    Toast.LENGTH_SHORT
+                ).show()
+                !Patterns.EMAIL_ADDRESS.matcher(email.text).matches() -> Toast.makeText(
+                    this,
+                    "Please enter valid email address",
                     Toast.LENGTH_SHORT
                 ).show()
                 TextUtils.isEmpty(mobile.text.toString()) -> Toast.makeText(

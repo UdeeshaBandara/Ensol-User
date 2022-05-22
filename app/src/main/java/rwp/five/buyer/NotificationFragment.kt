@@ -54,7 +54,7 @@ class NotificationFragment : Fragment() {
             LinearLayoutManager.VERTICAL,
             false
         )
-//        getNotifications()
+        getNotifications()
 
     }
 
@@ -95,7 +95,7 @@ class NotificationFragment : Fragment() {
                 JsonParser().parse(notifications.get(position).asJsonObject.get("content").asString) as JsonObject
             holder.title.text = jsonObject.get("title").asString
             holder.description.text = jsonObject.get("description").asString
-            holder.time.text = jsonObject.get("createdAt").asString
+            holder.time.text = notifications.get(position).asJsonObject.get("createdAt").asString
         }
 
     }
@@ -121,7 +121,7 @@ class NotificationFragment : Fragment() {
                     if (it.get("status").asBoolean) {
 
                         notifications = it.getAsJsonArray("data")
-                        recycler_orders.adapter?.notifyDataSetChanged()
+                        recycler_notification.adapter?.notifyDataSetChanged()
 
                     } else
                         Toast.makeText(

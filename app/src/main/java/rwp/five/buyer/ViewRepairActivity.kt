@@ -88,6 +88,7 @@ class ViewRepairActivity : AppCompatActivity() {
             holder.repairId.text = "Repair #ENR" + repairs[position].asJsonObject.get("id").asString
             holder.orderNo.text =
                 "Order #ZES" + repairs[position].asJsonObject.get("orderId").asString
+            holder.machine.text =repairs[position].asJsonObject.get("machine").asJsonObject.get("machineType").asString
 
             when (repairs[position].asJsonObject.get("status").asString) {
                 "0" -> {
@@ -105,8 +106,8 @@ class ViewRepairActivity : AppCompatActivity() {
             }
             holder.repairDate.text =
                 repairs[position].asJsonObject.get("createdAt").asString.substring(0, 10)
-            holder.description.text =
-                repairs[position].asJsonObject.get("description").asString
+            holder.description.text = repairs[position].asJsonObject.get("description").asString
+
 
 
         }
