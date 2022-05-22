@@ -4,11 +4,13 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -28,7 +30,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import rwp.five.buyer.utilities.ApiInterface
 import rwp.five.buyer.utilities.TinyDB
-import java.lang.String
 
 class OrderFragment : Fragment() {
 
@@ -37,6 +38,10 @@ class OrderFragment : Fragment() {
 
     var orders = JsonArray()
     var orderMachines = JsonArray()
+
+    var selectedOrderId = ""
+    var selectedMachineId = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,13 +67,13 @@ class OrderFragment : Fragment() {
             past.setTextColor(resources.getColor(R.color.black))
             past.alpha = 0.3f
             current.alpha = 1f
-            past_tick.visibility = View.INVISIBLE
-            current_tick.visibility = View.VISIBLE
+//            past_tick.visibility = View.INVISIBLE
+//            current_tick.visibility = View.VISIBLE
             getCurrentOrders()
         }
         past.setOnClickListener {
-            current_tick.visibility = View.INVISIBLE
-            past_tick.visibility = View.VISIBLE
+//            current_tick.visibility = View.INVISIBLE
+//            past_tick.visibility = View.VISIBLE
             past.setBackgroundColor(resources.getColor(R.color.black))
             current.setBackgroundColor(resources.getColor(R.color.white))
             past.setTextColor(resources.getColor(R.color.white))
@@ -120,15 +125,17 @@ class OrderFragment : Fragment() {
 
         override fun onBindViewHolder(holder: CurrentOrderItemHolder, position: Int) {
 
-            holder.order_no.text = "OR " + orders.get(position).asJsonObject.get("id").asString
+            holder.order_no.text =
+                "Order #ZES" + orders.get(position).asJsonObject.get("id").asString
             holder.total.text = "Total : LKR " + String.format(
                 "%.2f",
                 orders.get(position).asJsonObject.get("price").asDouble
             )
-//            holder.end_date.setText( orders.get(position).asJsonObject.get("").asDouble)
+
             holder.view_machines.setOnClickListener {
+                selectedOrderId = orders.get(position).asJsonObject.get("id").asString
                 orderMachines = orders.get(position).asJsonObject.get("machines").asJsonArray
-                createOrderMachineDetailsPopup()
+                createOrderMachineDetailsPopup(holder.order_no.text.toString())
             }
         }
 
@@ -140,9 +147,11 @@ class OrderFragment : Fragment() {
         var machine_price: TextView = itemView.findViewById(R.id.machine_price)
         var qty: TextView = itemView.findViewById(R.id.qty)
         var machine_image: ImageView = itemView.findViewById(R.id.machine_image)
+        var repair: Button = itemView.findViewById(R.id.repair)
 
         init {
             qty.visibility = View.VISIBLE
+            repair.visibility = View.VISIBLE
         }
 
     }
@@ -193,6 +202,11 @@ class OrderFragment : Fragment() {
                     ).fitCenter()
                     .into(holder.machine_image)
 
+            holder.repair.setOnClickListener {
+                selectedMachineId = orderMachines.get(position).asJsonObject.get("id").asString
+                createRepairSubmitPopup()
+            }
+
         }
 
     }
@@ -202,28 +216,34 @@ class OrderFragment : Fragment() {
         if (hidden)
             requireActivity().window?.statusBarColor =
                 ContextCompat.getColor(requireActivity(), R.color.white)
-        else
+        else {
             requireActivity().window?.statusBarColor =
                 ContextCompat.getColor(requireActivity(), R.color.red)
+            getCurrentOrders()
+        }
+
+
     }
 
-    private fun createOrderMachineDetailsPopup(
-    ) {
+    private fun createOrderMachineDetailsPopup(orderNo: String) {
 
 
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
         dialog.setContentView(R.layout.popup_view_machines)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val btn_ok: TextView = dialog.findViewById(R.id.btn_ok)
         val date: TextView = dialog.findViewById(R.id.date)
         val order_no: TextView = dialog.findViewById(R.id.order_no)
         val recycler_order_machines: RecyclerView =
             dialog.findViewById(R.id.recycler_order_machines)
-
+        order_no.text = orderNo
 
         recycler_order_machines.adapter = OrderMachineAdapter()
         recycler_order_machines.layoutManager = LinearLayoutManager(
@@ -238,8 +258,88 @@ class OrderFragment : Fragment() {
             dialog.dismiss()
         }
 
+
         dialog.show()
 
+    }
+
+    private fun createRepairSubmitPopup() {
+
+
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.popup_repair)
+
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val description: TextView = dialog.findViewById(R.id.description)
+        val btnSubmit: TextView = dialog.findViewById(R.id.btn_submit)
+
+
+        btnSubmit.setOnClickListener {
+
+            if (TextUtils.isEmpty(description.text.toString()))
+                Toast.makeText(
+                    requireActivity(),
+                    "Please enter issue",
+                    Toast.LENGTH_SHORT
+                ).show()
+            else {
+                submitARepairRequest(description.text.toString())
+                dialog.dismiss()
+            }
+
+        }
+
+        dialog.show()
+
+    }
+
+    private fun submitARepairRequest(description: String) {
+
+        showHUD()
+
+        val apiInterface: Call<JsonObject> = ApiInterface.create().submitARepairRequest(
+            "Bearer ${tinyDB.getString("token")}",
+            postDetails = mutableMapOf(
+                "description" to description,
+                "orderId" to selectedOrderId,
+                "machineId" to selectedMachineId
+            ) as HashMap<String, String>
+        )
+
+        apiInterface.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
+            ) {
+                hideHUD()
+
+                response.body()?.let {
+
+
+                    if (it.get("status").asBoolean) {
+
+
+                    } else
+                        Toast.makeText(
+                            requireContext(),
+                            it.get("data").asString,
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("fail", t.message.toString())
+            }
+        })
     }
 
     private fun getPastOrders() {

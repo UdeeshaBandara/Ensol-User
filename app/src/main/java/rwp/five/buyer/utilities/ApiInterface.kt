@@ -26,6 +26,10 @@ interface ApiInterface {
     fun getAllMachines(
         @Header("Authorization") token: String
     ): Call<JsonObject>
+    @GET("machine/home")
+    fun getMachineHome(
+        @Header("Authorization") token: String
+    ): Call<JsonObject>
 
     @GET("order/current")
     fun getCurrentOrders(
@@ -47,6 +51,22 @@ interface ApiInterface {
     fun placeAnOrder(
         @Header("Authorization") token: String,
         @Body postDetails: HashMap<String, Any>
+    ): Call<JsonObject>
+
+    @POST("repair")
+    fun submitARepairRequest(
+        @Header("Authorization") token: String,
+        @Body postDetails: HashMap<String, String>
+    ): Call<JsonObject>
+
+    @GET("repair")
+    fun getAllRepairs(
+        @Header("Authorization") token: String
+    ): Call<JsonObject>
+
+    @GET("auth/revokeFCM")
+    fun revokeFCMToken(
+        @Header("Authorization") token: String
     ): Call<JsonObject>
 
 

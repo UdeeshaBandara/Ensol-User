@@ -265,7 +265,6 @@ class CartActivity : AppCompatActivity() {
         val btnConfirm: Button = dialog.findViewById(R.id.btn_confirm)
 
 
-
         val from = Instant.ofEpochSecond(cartItems[position].productContractStart!!.toLong())
             .atZone(ZoneId.systemDefault())
             .toLocalDateTime()
@@ -275,10 +274,14 @@ class CartActivity : AppCompatActivity() {
 
         calendarPicker.setFirstSelectedDate(
             year = from.year,
-            month = from.monthValue+1,
+            month = from.monthValue + 1,
             day = from.dayOfMonth
         )
-        calendarPicker.setSecondSelectedDate(year = to.year, month = to.monthValue+1, day = to.dayOfMonth)
+        calendarPicker.setSecondSelectedDate(
+            year = to.year,
+            month = to.monthValue + 1,
+            day = to.dayOfMonth
+        )
 
         calendarPicker.initCalendar()
 
@@ -339,14 +342,20 @@ class CartActivity : AppCompatActivity() {
 
             singleItem.addProperty("machineId", item.productId)
             singleItem.addProperty("quantity", item.quantity)
-            singleItem.addProperty("contractStartDate", item.productContractStart!!.getDateFromTimestamp())
-            singleItem.addProperty("contractEndDate", item.productContractEnd!!.getDateFromTimestamp())
+            singleItem.addProperty(
+                "contractStartDate",
+                item.productContractStart!!.getDateFromTimestamp()
+            )
+            singleItem.addProperty(
+                "contractEndDate",
+                item.productContractEnd!!.getDateFromTimestamp()
+            )
             items.add(singleItem)
 
         }
 
 
-        val parameterNames: HashMap<String, Any> =  hashMapOf(
+        val parameterNames: HashMap<String, Any> = hashMapOf(
 
             "price" to total,
             "orderDate" to SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(Date()),
@@ -356,7 +365,7 @@ class CartActivity : AppCompatActivity() {
 
         val apiInterface: Call<JsonObject> = ApiInterface.create().placeAnOrder(
             "Bearer ${tinyDB.getString("token")}",
-            postDetails =  parameterNames
+            postDetails = parameterNames
         )
 
         apiInterface.enqueue(object : Callback<JsonObject> {
@@ -378,10 +387,11 @@ class CartActivity : AppCompatActivity() {
                         lifecycleScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO) {
                                 cartDao?.clearCart()
-                                tinyDB.putBoolean("isEmptyCart",true)
+                                tinyDB.putBoolean("isEmptyCart", true)
                             }
-                         runOnUiThread { finish()
-                         }
+                            runOnUiThread {
+                                finish()
+                            }
 
                         }
 

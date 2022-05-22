@@ -52,6 +52,11 @@ class LoginActivity : AppCompatActivity() {
                 else -> getFcmToken()
             }
         }
+        forget_password.setOnClickListener {
+
+            startActivity(Intent(this,ForgotPasswordActivity::class.java))
+
+        }
 
 //        getFcmToken()
     }

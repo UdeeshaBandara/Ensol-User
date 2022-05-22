@@ -53,6 +53,7 @@ class HomeFragment : Fragment() {
 
     lateinit var tinyDB: TinyDB
 
+    var topMachines = JsonArray()
     var machines = JsonArray()
     var selectedMachine = JsonObject()
     var hud: KProgressHUD? = null
@@ -142,7 +143,7 @@ class HomeFragment : Fragment() {
 
         override fun getItemCount(): Int {
 
-            return machines.size()
+            return topMachines.size()
         }
 
 
@@ -268,6 +269,17 @@ class HomeFragment : Fragment() {
             )
 
 
+
+            val jsonArray =
+                JsonParser().parse(selectedMachine.get("images").asString) as JsonArray
+            if (jsonArray.size() > 0)
+                Glide.with(activity!!)
+                    .load(
+                        jsonArray.get(0).asString
+
+                    ).fitCenter()
+                    .into(product_image)
+
             date.setOnClickListener { showDatePicker() }
 
             add_to_cart.setOnClickListener {
@@ -369,35 +381,6 @@ class HomeFragment : Fragment() {
 
     }
 
-//    fun showDatePicker() {
-//        val c = Calendar.getInstance()
-//        val year = c.get(Calendar.YEAR)
-//        val month = c.get(Calendar.MONTH)
-//        val day = c.get(Calendar.DAY_OF_MONTH)
-//
-//
-//        val dpd = DatePickerDialog(
-//            requireActivity(),
-//            { _, year, monthOfYear, dayOfMonth ->
-//                selectedDate.visibility = View.VISIBLE
-//
-//                val month = if ((monthOfYear + 1) < 10)
-//                    String.format("%02d", monthOfYear + 1)
-//                else
-//                    (monthOfYear + 1).toString()
-//
-//                selectedDate.text =
-//                    year.toString() + "-" + month + "-" + dayOfMonth.toString()
-//
-//            },
-//            year,
-//            month,
-//            day
-//        )
-//        dpd.datePicker.minDate = System.currentTimeMillis()
-//
-//        dpd.show()
-//    }
 
     private fun addToCart(quantity: Int) {
 
@@ -442,18 +425,6 @@ class HomeFragment : Fragment() {
                     contractEnd
                 )
 
-//            lifecycleScope.launch(Dispatchers.IO) {
-//                var subTotal = 0.0
-//                model.cartItems.postValue(cartDao?.getAll()!!)
-//
-//                cartDao?.getAll()!!.forEach { item ->
-//                    subTotal += item.productPrice?.times(item.quantity!!)!!
-//                    model.subTotal.postValue(subTotal)
-//                    model.total.postValue(subTotal)
-//
-//
-//                }
-//            }
 
             activity?.runOnUiThread {
 
@@ -474,7 +445,7 @@ class HomeFragment : Fragment() {
 
         showHUD()
 
-        val apiInterface: Call<JsonObject> = ApiInterface.create().getAllMachines(
+        val apiInterface: Call<JsonObject> = ApiInterface.create().getMachineHome(
             "Bearer ${tinyDB.getString("token")}"
         )
 
@@ -490,7 +461,8 @@ class HomeFragment : Fragment() {
 
                     if (it.get("status").asBoolean) {
 
-                        machines = it.getAsJsonArray("data")
+                        topMachines = it.getAsJsonObject("data").getAsJsonArray("top_machines")
+                        machines = it.getAsJsonObject("data").getAsJsonArray("machines")
                         recycler_home.adapter?.notifyDataSetChanged()
                         recycler_top_selling.adapter?.notifyDataSetChanged()
 

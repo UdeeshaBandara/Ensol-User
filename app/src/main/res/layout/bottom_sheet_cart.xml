@@ -19,7 +19,6 @@
         android:layout_height="230dp"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
-        android:src="@drawable/sample_machine2"
         app:riv_corner_radius_top_left="30dp"
         app:riv_corner_radius_top_right="30dp" />
 
@@ -144,24 +143,48 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="start|center_vertical"
-                android:layout_weight="7"
+                android:orientation="vertical"
+                android:layout_weight="7">
 
-                android:ellipsize="end"
-                android:fontFamily="@font/roboto_regular"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:text="Contract End Date"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="top"
+
+                    android:maxLines="1"
+                    android:text="Contract End Date"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+
+                <TextView
+
+                    android:id="@+id/selected_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                 
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -171,21 +194,6 @@
 
         </LinearLayout>
 
-        <TextView
-
-            android:id="@+id/selected_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/roboto_regular"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/add_to_cart"

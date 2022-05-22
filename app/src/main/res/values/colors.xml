@@ -4,4 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#A6FF2D42</color>
     <color name="blue">#A9D7F6</color>
+
+    <color name="cancel">#F44336</color>
+    <color name="complete">#4CAF50</color>
+    <color name="ongoing">#3F51B5</color>
+
+
 </resources>
