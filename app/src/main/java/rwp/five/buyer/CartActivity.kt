@@ -212,33 +212,45 @@ class CartActivity : AppCompatActivity() {
                 )
             }
             holder.delete_top.setOnClickListener {
-                total -= ((cartItems[position].productPrice!!).times(cartItems[position].quantity!!)).times(
-                    getNoOfDays(
-                        cartItems[position].productContractEnd!!.toLong(),
-                        cartItems[position].productContractStart!!.toLong()
-                    )
-                )
-                cartItems[position].productId?.let { it1 ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        cartDao?.deleteCartItemByProductId(
-                            it1
-                        )
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    holder.delete_top.isEnabled = false
+                    withContext(Dispatchers.IO) {
+                        cartItems[position].productId?.let { it1 ->
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                cartDao?.deleteCartItemByProductId(
+                                    it1
+                                )
+                            }
+                        }
                     }
+                    total -= ((cartItems[position].productPrice!!).times(cartItems[position].quantity!!)).times(
+                        getNoOfDays(
+                            cartItems[position].productContractEnd!!.toLong(),
+                            cartItems[position].productContractStart!!.toLong()
+                        )
+                    )
+
                     cartItems.removeAt(position)
                     recycler_cart.adapter?.notifyItemRemoved(position)
-
+                    notifyItemRangeChanged(position, itemCount)
                     if (cartItems.size == 0) {
                         tinyDB.putBoolean("isEmptyCart", true)
                         finish()
                     }
+
+
+                    count.text = cartItems.size.toString() + " items in the cart"
+
+                    txt_total.text = "LKR " + String.format(
+                        "%.2f",
+                        total
+                    )
+                    holder.delete_top.isEnabled = true
+
+
                 }
 
-                count.text = cartItems.size.toString() + "items in the cart"
-
-                txt_total.text = "LKR " + String.format(
-                    "%.2f",
-                    total
-                )
 
             }
             holder.contract.setOnClickListener {
@@ -330,6 +342,38 @@ class CartActivity : AppCompatActivity() {
 
     }
 
+    private fun createOrderSuccessPopup() {
+
+
+        val dialog = Dialog(this@CartActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.popup_view_machines)
+
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val btn_confirm: Button = dialog.findViewById(R.id.btn_confirm)
+
+
+
+
+        btn_confirm.setOnClickListener {
+            finish()
+
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            finish()
+        }
+
+        dialog.show()
+
+    }
+
     private fun placeAnOrder() {
 
         showHUD()
@@ -380,18 +424,14 @@ class CartActivity : AppCompatActivity() {
 
 
                     if (it.get("status").asBoolean) {
-                        Toast.makeText(
-                            applicationContext,
-                            "Order created successfully!!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
                         lifecycleScope.launch(Dispatchers.Main) {
                             withContext(Dispatchers.IO) {
                                 cartDao?.clearCart()
                                 tinyDB.putBoolean("isEmptyCart", true)
                             }
                             runOnUiThread {
-                                finish()
+                             createOrderSuccessPopup()
                             }
 
                         }

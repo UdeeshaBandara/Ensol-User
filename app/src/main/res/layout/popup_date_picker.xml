@@ -23,8 +23,8 @@
             app:eventDotColorWhenSelected="@color/white"
             app:eventDotGravity="end"
             app:firstSelectedDateTextColor="@color/white"
-            app:highlightedDatesBackgroundColor="@color/red"
-            app:highlightedDatesTextColor="@color/white"
+            app:highlightedDatesBackgroundColor="#A67C7C7C"
+            app:highlightedDatesTextColor="@color/black"
             app:nextMonthButtonColor="@color/white"
             app:previousMonthButtonColor="@color/white"
             app:secondSelectedDateTextColor="@color/white"
@@ -34,6 +34,18 @@
             app:yearSelectButtonIconColor="@color/white"
             app:yearSelectButtonTextColor="@color/white"
             app:yearTextColor="@color/red" />
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="100dp"
+            android:layout_height="45dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Cancel"
+            android:gravity="center"
+            android:layout_marginStart="25dp"
+            android:layout_below="@+id/calendarPicker"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btn_confirm"

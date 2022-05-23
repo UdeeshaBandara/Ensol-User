@@ -2,15 +2,14 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_marginHorizontal="10dp"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="5dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/order_no"
@@ -21,30 +20,21 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
+            android:paddingVertical="10dp"
             android:text="Order #45A21E"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_gravity="start"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:fontFamily="@font/roboto_regular"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_order_machines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingBottom="30dp"
+            android:layout_above="@+id/btn_ok"
+            android:layout_below="@+id/order_no"
+
             android:overScrollMode="never"
+
             android:scrollbars="none" />
 
         <TextView
@@ -52,17 +42,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
+            android:layout_alignParentBottom="true"
             android:layout_gravity="start"
-            android:layout_marginVertical="15dp"
-
             android:fontFamily="@font/roboto_regular"
             android:gravity="center"
-            android:text="Okay"
+            android:paddingVertical="15dp"
 
+            android:text="Okay"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

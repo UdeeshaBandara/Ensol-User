@@ -10,12 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -98,7 +96,8 @@ class OrderFragment : Fragment() {
 
         var order_no: TextView = itemView.findViewById(R.id.order_no)
         var total: TextView = itemView.findViewById(R.id.total)
-        var end_date: TextView = itemView.findViewById(R.id.end_date)
+        var endDate: TextView = itemView.findViewById(R.id.end_date)
+        var orderStatus: RelativeLayout = itemView.findViewById(R.id.order_status)
         var view_machines: TextView = itemView.findViewById(R.id.view_machines)
 
 
@@ -132,6 +131,46 @@ class OrderFragment : Fragment() {
                 orders.get(position).asJsonObject.get("price").asDouble
             )
 
+            when (orders.get(position).asJsonObject.get("orderStatus").asString) {
+                "0" -> {
+                    holder.orderStatus.setBackgroundColor(
+                        getColor(
+                            requireActivity(),
+                            R.color.cancel
+                        )
+                    )
+                    holder.endDate.text = "Cancelled"
+                }
+                "1" -> {
+                    holder.orderStatus.setBackgroundColor(
+                        getColor(
+                            requireActivity(),
+                            R.color.complete
+                        )
+                    )
+                    holder.endDate.text = "Completed"
+                }
+                "2" -> {
+                    holder.orderStatus.setBackgroundColor(
+                        getColor(
+                            requireActivity(),
+                            R.color.ongoing
+                        )
+                    )
+                    holder.endDate.text = "Ongoing"
+                }
+                "3" -> {
+                    holder.orderStatus.setBackgroundColor(
+                        getColor(
+                            requireActivity(),
+                            R.color.pending
+                        )
+                    )
+                    holder.endDate.text = "Pending"
+                }
+            }
+
+
             holder.view_machines.setOnClickListener {
                 selectedOrderId = orders.get(position).asJsonObject.get("id").asString
                 orderMachines = orders.get(position).asJsonObject.get("machines").asJsonArray
@@ -148,11 +187,9 @@ class OrderFragment : Fragment() {
         var qty: TextView = itemView.findViewById(R.id.qty)
         var machine_image: ImageView = itemView.findViewById(R.id.machine_image)
         var repair: Button = itemView.findViewById(R.id.repair)
+        var contractStartDate: TextView = itemView.findViewById(R.id.contract_start_date)
+        var contractEndDate: TextView = itemView.findViewById(R.id.contract_end_date)
 
-        init {
-            qty.visibility = View.VISIBLE
-            repair.visibility = View.VISIBLE
-        }
 
     }
 
@@ -164,7 +201,7 @@ class OrderFragment : Fragment() {
         ): OrderMachineHolder {
 
             val view: View = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_home, parent, false)
+                .inflate(R.layout.item_machine, parent, false)
 
             return OrderMachineHolder(view)
         }
@@ -189,6 +226,14 @@ class OrderFragment : Fragment() {
                 "Quantity : " + orderMachines.get(position).asJsonObject.get("OrderMachines").asJsonObject.get(
                     "quantity"
                 ).asString
+            holder.contractStartDate.text =
+                "Contract Start Date : " + orderMachines.get(position).asJsonObject.get("OrderMachines").asJsonObject.get(
+                    "contractStartDate"
+                ).asString.substring(0, 10)
+            holder.contractEndDate.text =
+                "Contract End Date   : " + orderMachines.get(position).asJsonObject.get("OrderMachines").asJsonObject.get(
+                    "contractEndDate"
+                ).asString.substring(0, 10)
 
             val jsonArray =
                 JsonParser().parse(
@@ -201,6 +246,7 @@ class OrderFragment : Fragment() {
 
                     ).fitCenter()
                     .into(holder.machine_image)
+
 
             holder.repair.setOnClickListener {
                 selectedMachineId = orderMachines.get(position).asJsonObject.get("id").asString
@@ -234,12 +280,12 @@ class OrderFragment : Fragment() {
 
         dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ((resources.displayMetrics.heightPixels * 0.60).toInt())
         )
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val btn_ok: TextView = dialog.findViewById(R.id.btn_ok)
-        val date: TextView = dialog.findViewById(R.id.date)
+
         val order_no: TextView = dialog.findViewById(R.id.order_no)
         val recycler_order_machines: RecyclerView =
             dialog.findViewById(R.id.recycler_order_machines)

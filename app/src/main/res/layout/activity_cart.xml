@@ -42,7 +42,7 @@
         android:layout_below="@+id/top"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="130dp"
+        android:paddingBottom="185dp"
         android:scrollbars="none" />
 
 

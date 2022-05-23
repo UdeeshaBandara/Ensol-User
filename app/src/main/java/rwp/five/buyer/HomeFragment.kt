@@ -10,7 +10,6 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.EditorInfo
@@ -229,31 +228,34 @@ class HomeFragment : Fragment() {
 
 
         override fun onBindViewHolder(holder: HomeItemHolder, position: Int) {
+            try {
+                holder.machine_title.text =
+                    machines.get(position).asJsonObject.get("machineType").asString
+                holder.machine_price.text =
 
-            holder.machine_title.text =
-                machines.get(position).asJsonObject.get("machineType").asString
-            holder.machine_price.text =
-
-                "LKR " +
-                        String.format(
-                            "%.2f",
-                            machines.get(position).asJsonObject.get("rentPrice").asDouble
-                        )
+                    "LKR " +
+                            String.format(
+                                "%.2f",
+                                machines.get(position).asJsonObject.get("rentPrice").asDouble
+                            )
 
 
-            val jsonArray =
-                JsonParser().parse(machines.get(position).asJsonObject.get("images").asString) as JsonArray
-            if (jsonArray.size() > 0)
-                Glide.with(activity!!)
-                    .load(
-                        jsonArray.get(0).asString
+                val jsonArray =
+                    JsonParser().parse(machines.get(position).asJsonObject.get("images").asString) as JsonArray
+                if (jsonArray.size() > 0)
+                    Glide.with(activity!!)
+                        .load(
+                            jsonArray.get(0).asString
 
-                    ).fitCenter()
-                    .into(holder.machine_image)
+                        ).fitCenter()
+                        .into(holder.machine_image)
 
-            holder.card_root.setOnClickListener {
-                selectedMachine = machines.get(position).asJsonObject
-                openBottomSheet()
+                holder.card_root.setOnClickListener {
+                    selectedMachine = machines.get(position).asJsonObject
+                    openBottomSheet()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
 
 
@@ -372,6 +374,7 @@ class HomeFragment : Fragment() {
                 )
                 cart_qty.text = quantity.toString() + " Items to cart"
             }
+
         }
     }
 
@@ -379,13 +382,13 @@ class HomeFragment : Fragment() {
 
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
         dialog.setContentView(R.layout.popup_date_picker)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 
         val calendarPicker: CalendarPicker = dialog.findViewById(R.id.calendarPicker)
         val btnConfirm: Button = dialog.findViewById(R.id.btn_confirm)
+        val cancel: TextView = dialog.findViewById(R.id.cancel)
 
         if (selectedDate.visibility == View.VISIBLE) {
             val from = Instant.ofEpochSecond(contractStart.toLong())
@@ -439,6 +442,7 @@ class HomeFragment : Fragment() {
             }
             dialog.dismiss()
         }
+        cancel.setOnClickListener { dialog.dismiss() }
 
         dialog.show()
 

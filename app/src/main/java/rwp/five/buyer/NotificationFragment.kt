@@ -95,7 +95,8 @@ class NotificationFragment : Fragment() {
                 JsonParser().parse(notifications.get(position).asJsonObject.get("content").asString) as JsonObject
             holder.title.text = jsonObject.get("title").asString
             holder.description.text = jsonObject.get("description").asString
-            holder.time.text = notifications.get(position).asJsonObject.get("createdAt").asString
+            holder.time.text = notifications.get(position).asJsonObject.get("createdAt").asString.substring(0,10)+" at "+
+                    notifications.get(position).asJsonObject.get("createdAt").asString.substring(11,19)
         }
 
     }

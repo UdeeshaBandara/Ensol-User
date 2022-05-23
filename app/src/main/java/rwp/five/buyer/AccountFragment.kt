@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -76,17 +77,6 @@ class AccountFragment : Fragment() {
 
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-//        if (hidden)
-//            requireActivity().window?.statusBarColor =
-//                ContextCompat.getColor(requireActivity(), R.color.white)
-//        else
-//            requireActivity().window?.statusBarColor =
-//                ContextCompat.getColor(requireActivity(), R.color.red)
-//
-
-    }
 
     inner class AccountItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -132,10 +122,11 @@ class AccountFragment : Fragment() {
             )
             holder.card_root.setOnClickListener {
 
-                if (accountLabelArray[position] == "Service Requests")
-                    startActivity(Intent(requireActivity(), ViewRepairActivity::class.java))
-                else if (accountLabelArray[position] == "Log out")
-                    createLogoutPopup()
+                when {
+                    accountLabelArray[position] == "Service Requests" -> startActivity(Intent(requireActivity(), ViewRepairActivity::class.java))
+                    accountLabelArray[position] == "Account" -> startActivity(Intent(requireActivity(), UserActivity::class.java))
+                    accountLabelArray[position] == "Log out" -> createLogoutPopup()
+                }
 
             }
 
@@ -214,6 +205,19 @@ class AccountFragment : Fragment() {
             }
         })
     }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden)
+            requireActivity().window?.statusBarColor =
+                ContextCompat.getColor(requireActivity(), R.color.white)
+        else
+            requireActivity().window?.statusBarColor =
+                ContextCompat.getColor(requireActivity(), R.color.red)
+
+
+    }
+
 
     private fun showHUD() {
         if (hud!!.isShowing) {
