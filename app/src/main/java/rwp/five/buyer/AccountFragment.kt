@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,7 +37,7 @@ class AccountFragment : Fragment() {
 
     var accountLabelArray = arrayOf(
 
-        "Service Requests",
+        "Repair Requests",
         "Account",
         "Contact Us",
         "Log out"
@@ -75,6 +76,7 @@ class AccountFragment : Fragment() {
 
         recycler_account.layoutManager = GridLayoutManager(activity?.applicationContext, 2)
 
+        getUserDetails()
     }
 
 
@@ -123,8 +125,24 @@ class AccountFragment : Fragment() {
             holder.card_root.setOnClickListener {
 
                 when {
-                    accountLabelArray[position] == "Service Requests" -> startActivity(Intent(requireActivity(), ViewRepairActivity::class.java))
-                    accountLabelArray[position] == "Account" -> startActivity(Intent(requireActivity(), UserActivity::class.java))
+                    accountLabelArray[position] == "Repair Requests" -> startActivity(
+                        Intent(
+                            requireActivity(),
+                            ViewRepairActivity::class.java
+                        )
+                    )
+                    accountLabelArray[position] == "Account" -> (activity as Main).userDetailUpdateLauncher.launch(
+                        Intent(
+                            requireActivity(),
+                            UserActivity::class.java
+                        )
+                    )
+                    accountLabelArray[position] == "Contact Us" -> {
+                        val intent = Intent(Intent.ACTION_DIAL)
+                        intent.data = Uri.parse("tel:0333330873")
+                        startActivity(intent)
+
+                    }
                     accountLabelArray[position] == "Log out" -> createLogoutPopup()
                 }
 
@@ -133,6 +151,7 @@ class AccountFragment : Fragment() {
         }
 
     }
+
 
     private fun createLogoutPopup() {
 
@@ -201,7 +220,49 @@ class AccountFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
+            }
+        })
+    }
+
+    fun getUserDetails() {
+
+        showHUD()
+
+        val apiInterface: Call<JsonObject> = ApiInterface.create().getUser(
+            "Bearer ${tinyDB.getString("token")}"
+        )
+
+        apiInterface.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(
+                call: Call<JsonObject>,
+                response: Response<JsonObject>
+            ) {
+                hideHUD()
+
+                response.body()?.let {
+
+
+                    if (it.get("status").asBoolean) {
+
+                        company_name.text = it.getAsJsonObject("data").get("name").asString
+                        address.text = it.getAsJsonObject("data").get("address").asString
+
+                    } else
+                        Toast.makeText(
+                            requireActivity(),
+                            it.get("data").asString,
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("fail", t.message.toString())
+                hideHUD()
             }
         })
     }

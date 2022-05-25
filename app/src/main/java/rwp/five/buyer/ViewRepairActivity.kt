@@ -149,6 +149,7 @@ class ViewRepairActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
             }
         })

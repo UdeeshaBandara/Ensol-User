@@ -378,7 +378,11 @@ class OrderFragment : Fragment() {
 
                     if (it.get("status").asBoolean) {
 
-
+                        Toast.makeText(
+                            requireContext(),
+                           "Repair request sent successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else
                         Toast.makeText(
                             requireContext(),
@@ -391,6 +395,7 @@ class OrderFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
             }
         })
@@ -431,6 +436,7 @@ class OrderFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
             }
         })
@@ -471,6 +477,7 @@ class OrderFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
             }
         })

@@ -1,6 +1,7 @@
 package rwp.five.buyer
 
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -180,7 +182,8 @@ class Main : AppCompatActivity() {
                     View.INVISIBLE
                 bottom_navigation.visibility =
                     View.INVISIBLE
-                (mainFragmentManager.findFragmentByTag( homeFragment.javaClass.name) as HomeFragment).top_products.visibility = View.GONE
+                (mainFragmentManager.findFragmentByTag(homeFragment.javaClass.name) as HomeFragment).top_products.visibility =
+                    View.GONE
 
             } else {
 
@@ -188,7 +191,8 @@ class Main : AppCompatActivity() {
                     View.VISIBLE
                 bottom_navigation.visibility =
                     View.VISIBLE
-                (mainFragmentManager.findFragmentByTag( homeFragment.javaClass.name) as HomeFragment).top_products.visibility = View.VISIBLE
+                (mainFragmentManager.findFragmentByTag(homeFragment.javaClass.name) as HomeFragment).top_products.visibility =
+                    View.VISIBLE
 
             }
 
@@ -203,5 +207,12 @@ class Main : AppCompatActivity() {
         currentFragments = nextFragment
 
     }
+
+    var userDetailUpdateLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK)
+                (mainFragmentManager.findFragmentByTag(accountFragment.javaClass.name) as AccountFragment).getUserDetails()
+
+        }
 
 }

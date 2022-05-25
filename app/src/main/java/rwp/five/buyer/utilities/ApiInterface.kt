@@ -22,11 +22,16 @@ interface ApiInterface {
     fun register(
         @Body postDetails: HashMap<String, String>
     ): Call<JsonObject>
+    @PUT("user/update")
+    fun updateUserDetails(
+        @Header("Authorization") token: String,
+        @Body postDetails: HashMap<String, String>
+    ): Call<JsonObject>
     @GET("user")
     fun getUser(
         @Header("Authorization") token: String
     ): Call<JsonObject>
-    @POST("/user/resetPassword")
+    @POST("user/resetPassword")
     fun updateUser(
         @Body postDetails: HashMap<String, String>
     ): Call<JsonObject>

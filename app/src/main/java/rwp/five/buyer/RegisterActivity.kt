@@ -92,6 +92,8 @@ class RegisterActivity : AppCompatActivity() {
 
         }
 
+        login_back.setOnClickListener { onBackPressed() }
+
     }
 
     private fun getFcmToken() {
@@ -159,6 +161,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
             }
         })

@@ -22,34 +22,42 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".UserActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".NewPasswordActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".OTPActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ViewRepairActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".CartActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".Main"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".utilities.SplashScreen"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="fullSensor" >
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -59,6 +67,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|adjustResize" />
 
         <meta-data

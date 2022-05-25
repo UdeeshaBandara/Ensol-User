@@ -43,6 +43,7 @@
 
                 android:fontFamily="@font/roboto_regular"
                 android:maxLines="2"
+                android:layout_marginEnd="10dp"
                 android:text="Zoyer Heavy-duty mattress over-lock sewing machine"
                 android:textColor="@color/black"
                 android:textSize="14sp" />

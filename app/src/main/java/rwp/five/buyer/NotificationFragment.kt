@@ -17,7 +17,6 @@ import com.google.gson.JsonParser
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.fragment_notification.*
-import kotlinx.android.synthetic.main.fragment_order.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -95,8 +94,15 @@ class NotificationFragment : Fragment() {
                 JsonParser().parse(notifications.get(position).asJsonObject.get("content").asString) as JsonObject
             holder.title.text = jsonObject.get("title").asString
             holder.description.text = jsonObject.get("description").asString
-            holder.time.text = notifications.get(position).asJsonObject.get("createdAt").asString.substring(0,10)+" at "+
-                    notifications.get(position).asJsonObject.get("createdAt").asString.substring(11,19)
+            holder.time.text =
+                notifications.get(position).asJsonObject.get("createdAt").asString.substring(
+                    0,
+                    10
+                ) + " at " +
+                        notifications.get(position).asJsonObject.get("createdAt").asString.substring(
+                            11,
+                            19
+                        )
         }
 
     }
@@ -120,25 +126,34 @@ class NotificationFragment : Fragment() {
 
 
                     if (it.get("status").asBoolean) {
-
+                        empty_msg.visibility = View.GONE
                         notifications = it.getAsJsonArray("data")
                         recycler_notification.adapter?.notifyDataSetChanged()
 
-                    } else
+                    } else {
+                        empty_msg.visibility = View.VISIBLE
                         Toast.makeText(
                             requireContext(),
                             it.get("data").asString,
                             Toast.LENGTH_SHORT
                         ).show()
+                    }
 
 
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                hideHUD()
                 Log.e("fail", t.message.toString())
             }
         })
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden)
+            getNotifications()
     }
 
     private fun showHUD() {
