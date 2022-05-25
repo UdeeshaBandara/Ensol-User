@@ -43,8 +43,6 @@ import rwp.five.buyer.utilities.CoreApp.Companion.getDateFromTimestamp
 import rwp.five.buyer.utilities.CoreApp.Companion.getNoOfDays
 import rwp.five.buyer.utilities.TinyDB
 import java.lang.String
-import java.time.Instant
-import java.time.ZoneId
 import java.util.*
 
 
@@ -319,7 +317,7 @@ class HomeFragment : Fragment() {
 
             totalPrice = quantity * noOfDays * unitPrice
 
-            cart_qty.text = quantity.toString() + " Items to cart"
+            cart_qty.text = "$quantity Items to cart"
 
             price_per_day.text = "LKR " + String.format(
                 "%.2f",
@@ -374,6 +372,26 @@ class HomeFragment : Fragment() {
                 )
                 cart_qty.text = quantity.toString() + " Items to cart"
             }
+            txt_qty.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    charSequence: CharSequence,
+                    i: Int,
+                    i1: Int,
+                    i2: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    charSequence: CharSequence,
+                    i: Int,
+                    i1: Int,
+                    i2: Int
+                ) {
+
+                }
+
+                override fun afterTextChanged(editable: Editable) {}
+            })
 
         }
     }
@@ -391,23 +409,23 @@ class HomeFragment : Fragment() {
         val cancel: TextView = dialog.findViewById(R.id.cancel)
 
         if (selectedDate.visibility == View.VISIBLE) {
-            val from = Instant.ofEpochSecond(contractStart.toLong())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime()
-            val to = Instant.ofEpochSecond(contractEnd.toLong())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime()
+
+            val from = contractStart.getDateFromTimestamp()
+
+            val to = contractEnd.getDateFromTimestamp()
 
             calendarPicker.setFirstSelectedDate(
-                year = from.year,
-                month = from.monthValue + 1,
-                day = from.dayOfMonth
+                year = from.substring(0, 4).toInt(),
+                month = from.substring(5, 7).toInt() - 1,
+                day = from.substring(8, 10).toInt()
             )
             calendarPicker.setSecondSelectedDate(
-                year = to.year,
-                month = to.monthValue + 1,
-                day = to.dayOfMonth
+                year = to.substring(0, 4).toInt(),
+                month = to.substring(5, 7).toInt() - 1,
+                day = to.substring(8, 10).toInt()
             )
+
+
         }
         calendarPicker.initCalendar()
 
@@ -419,28 +437,38 @@ class HomeFragment : Fragment() {
                 if (selectedDates != null) {
                     val firstDate = selectedDates.first.toString()
                     val secondDate = selectedDates.second.toString()
-                    totalPrice = 0.0
-                    selectedDate.visibility = View.VISIBLE
-                    contractStart = firstDate
-                    contractEnd = secondDate
-                    selectedDate.text =
-                        "From ${firstDate.getDateFromTimestamp()} To ${secondDate.getDateFromTimestamp()}"
-                    noOfDays = getNoOfDays(
-                        secondDate.toLong(),
-                        firstDate.toLong()
-                    )
-                    totalPrice = quantity * noOfDays * unitPrice
-                    cartItemPrice.text = "LKR " + String.format(
-                        "%.2f",
-                        totalPrice
-                    )
 
+                    if (System.currentTimeMillis() < firstDate.toLong() + 86400000 && System.currentTimeMillis() < secondDate.toLong() + 86400000
+                    ) {
+
+                        totalPrice = 0.0
+                        selectedDate.visibility = View.VISIBLE
+                        contractStart = firstDate
+                        contractEnd = secondDate
+                        selectedDate.text =
+                            "From ${firstDate.getDateFromTimestamp()} To ${secondDate.getDateFromTimestamp()}"
+                        noOfDays = getNoOfDays(
+                            secondDate.toLong(),
+                            firstDate.toLong()
+                        )
+                        totalPrice = quantity * noOfDays * unitPrice
+                        cartItemPrice.text = "LKR " + String.format(
+                            "%.2f",
+                            totalPrice
+                        )
+                        dialog.dismiss()
+                    } else
+                        Toast.makeText(
+                            requireActivity(),
+                            "Selected date range invalid",
+                            Toast.LENGTH_LONG
+                        ).show()
                 }
             } catch (e: Exception) {
 
                 e.printStackTrace()
             }
-            dialog.dismiss()
+
         }
         cancel.setOnClickListener { dialog.dismiss() }
 

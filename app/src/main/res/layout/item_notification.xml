@@ -60,7 +60,7 @@
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/sq"
+            android:src="@drawable/main_logo"
             app:riv_border_color="@color/white"
             app:riv_border_width="0dp"
             app:riv_oval="true" />

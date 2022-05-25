@@ -15,6 +15,7 @@
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/search_background.xml" value="0.22552083333333334" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/shadow.xml" value="0.22552083333333334" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/spinner_background.xml" value="0.2064814814814815" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/splash_layout.xml" value="0.22205128205128205" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/top_selling_background.xml" value="0.22552083333333334" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/drawable/top_selling_text_background.xml" value="0.22552083333333334" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_cart.xml" value="0.209375" />
@@ -28,7 +29,7 @@
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_register.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_user.xml" value="0.1953125" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/activity_view_repair.xml" value="0.209375" />
-        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/bottom_sheet_cart.xml" value="0.209375" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/bottom_sheet_cart.xml" value="0.2801120448179272" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_account.xml" value="0.20185185185185187" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/fragment_notification.xml" value="0.209375" />
@@ -46,6 +47,7 @@
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/popup_order_placed.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/popup_repair.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/popup_view_machines.xml" value="0.25" />
+        <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/layout/splash.xml" value="0.209375" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.11354166666666667" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/EnsolUser/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.11354166666666667" />
       </map>

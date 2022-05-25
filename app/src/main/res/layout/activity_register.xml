@@ -36,7 +36,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="70dp"
-        android:src="@drawable/sq" />
+        android:src="@drawable/main_logo" />
 
     <TextView
         android:id="@+id/title"

@@ -39,8 +39,6 @@ import rwp.five.buyer.utilities.CoreApp.Companion.getDateFromTimestamp
 import rwp.five.buyer.utilities.CoreApp.Companion.getNoOfDays
 import rwp.five.buyer.utilities.TinyDB
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
 import java.util.*
 
 
@@ -276,24 +274,22 @@ class CartActivity : AppCompatActivity() {
 
         val calendarPicker: CalendarPicker = dialog.findViewById(R.id.calendarPicker)
         val btnConfirm: Button = dialog.findViewById(R.id.btn_confirm)
+        val cancel: TextView = dialog.findViewById(R.id.cancel)
 
 
-        val from = Instant.ofEpochSecond(cartItems[position].productContractStart!!.toLong())
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
-        val to = Instant.ofEpochSecond(cartItems[position].productContractEnd!!.toLong())
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
+        val from = cartItems[position].productContractStart!!.toString().getDateFromTimestamp()
+
+        val to = cartItems[position].productContractEnd!!.toString().getDateFromTimestamp()
 
         calendarPicker.setFirstSelectedDate(
-            year = from.year,
-            month = from.monthValue + 1,
-            day = from.dayOfMonth
+            year = from.substring(0, 4).toInt(),
+            month = from.substring(5, 7).toInt() - 1,
+            day = from.substring(8, 10).toInt()
         )
         calendarPicker.setSecondSelectedDate(
-            year = to.year,
-            month = to.monthValue + 1,
-            day = to.dayOfMonth
+            year = to.substring(0, 4).toInt(),
+            month = to.substring(5, 7).toInt() - 1,
+            day = to.substring(8, 10).toInt()
         )
 
         calendarPicker.initCalendar()
@@ -301,8 +297,9 @@ class CartActivity : AppCompatActivity() {
         btnConfirm.setOnClickListener {
             try {
                 val selectedDates = calendarPicker.getSelectedDates()
+                if (System.currentTimeMillis() < selectedDates?.first!!.plus(86400000) && System.currentTimeMillis() < selectedDates.second + 86400000
+                ) {
 
-                if (selectedDates != null) {
                     total -= ((cartItems[position].productPrice!!).times(cartItems[position].quantity!!)).times(
                         getNoOfDays(
                             cartItems[position].productContractEnd!!.toLong(),
@@ -324,19 +321,29 @@ class CartActivity : AppCompatActivity() {
                             cartItems[position].productContractStart!!,
                             cartItems[position].productContractEnd!!
                         )
-                    }
-                    txt_total.text = "LKR " + String.format(
-                        "%.2f",
-                        total
-                    )
-                    recycler_cart.adapter?.notifyItemChanged(position)
+                        runOnUiThread {
 
-                }
+                            txt_total.text = "LKR " + String.format(
+                                "%.2f",
+                                total
+                            )
+                            recycler_cart.adapter?.notifyItemChanged(position)
+                        }
+                    }
+                    dialog.dismiss()
+                }else
+                    Toast.makeText(
+                        this@CartActivity,
+                        "Selected date range invalid",
+                        Toast.LENGTH_LONG
+                    ).show()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            dialog.dismiss()
+
         }
+        cancel.setOnClickListener { dialog.dismiss() }
+
 
         dialog.show()
 
@@ -347,7 +354,7 @@ class CartActivity : AppCompatActivity() {
 
         val dialog = Dialog(this@CartActivity)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.popup_view_machines)
+        dialog.setContentView(R.layout.popup_order_placed)
 
         dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -431,7 +438,7 @@ class CartActivity : AppCompatActivity() {
                                 tinyDB.putBoolean("isEmptyCart", true)
                             }
                             runOnUiThread {
-                             createOrderSuccessPopup()
+                                createOrderSuccessPopup()
                             }
 
                         }

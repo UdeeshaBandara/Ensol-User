@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +38,7 @@ class OrderFragment : Fragment() {
 
     var selectedOrderId = ""
     var selectedMachineId = ""
+    var isCurrentOrder = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +67,7 @@ class OrderFragment : Fragment() {
             current.alpha = 1f
 //            past_tick.visibility = View.INVISIBLE
 //            current_tick.visibility = View.VISIBLE
+            isCurrentOrder = true
             getCurrentOrders()
         }
         past.setOnClickListener {
@@ -78,6 +79,7 @@ class OrderFragment : Fragment() {
             current.setTextColor(resources.getColor(R.color.black))
             current.alpha = 0.3f
             past.alpha = 1f
+            isCurrentOrder = false
             getPastOrders()
 
         }
@@ -214,6 +216,12 @@ class OrderFragment : Fragment() {
 
         override fun onBindViewHolder(holder: OrderMachineHolder, position: Int) {
 
+            if(isCurrentOrder)
+                holder.repair.visibility = View.VISIBLE
+            else
+                holder.repair.visibility = View.GONE
+
+
             holder.machine_title.text =
                 orderMachines.get(position).asJsonObject.get("machineType").asString
 
@@ -261,11 +269,11 @@ class OrderFragment : Fragment() {
         super.onHiddenChanged(hidden)
         if (hidden)
             requireActivity().window?.statusBarColor =
-                ContextCompat.getColor(requireActivity(), R.color.white)
+                getColor(requireActivity(), R.color.white)
         else {
             requireActivity().window?.statusBarColor =
-                ContextCompat.getColor(requireActivity(), R.color.red)
-            getCurrentOrders()
+                getColor(requireActivity(), R.color.red)
+            current.performClick()
         }
 
 

@@ -30,20 +30,20 @@
             app:secondSelectedDateTextColor="@color/white"
             app:selectedDateCircleColor="@color/red"
             app:titleColor="@color/black"
-            app:yearSelectButtonColor="@color/red"
-            app:yearSelectButtonIconColor="@color/white"
-            app:yearSelectButtonTextColor="@color/white"
+            app:yearSelectButtonColor="@color/white"
+            app:yearSelectButtonIconColor="@color/black"
+            app:yearSelectButtonTextColor="@color/black"
             app:yearTextColor="@color/red" />
 
         <TextView
             android:id="@+id/cancel"
             android:layout_width="100dp"
             android:layout_height="45dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Cancel"
-            android:gravity="center"
-            android:layout_marginStart="25dp"
             android:layout_below="@+id/calendarPicker"
+            android:layout_marginStart="25dp"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:text="Cancel"
             android:textColor="@color/black"
             android:textSize="14sp" />
 

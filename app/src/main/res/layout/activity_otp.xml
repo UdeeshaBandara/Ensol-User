@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:src="@drawable/sq" />
+        android:src="@drawable/main_logo" />
 
     <TextView
         android:id="@+id/title"
@@ -33,17 +33,34 @@
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto_medium"
         android:gravity="center"
-        android:text="Enter your OTP\nhere!!!"
+        android:text="Enter 4 Digits Code"
         android:textColor="@color/black"
         android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginTop="20dp"
+
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:text="Enter the 4 digits code that you received on your email."
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+
 
     <LinearLayout
         android:id="@+id/otp"
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/content"
 
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
