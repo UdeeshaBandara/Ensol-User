@@ -105,7 +105,7 @@ class UserActivity : AppCompatActivity() {
             }
 
         }
-        back.setOnClickListener { onBackPressed() }
+
     }
 
     private fun getUser() {

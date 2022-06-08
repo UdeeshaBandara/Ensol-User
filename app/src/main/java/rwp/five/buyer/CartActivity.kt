@@ -4,15 +4,13 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -258,6 +256,66 @@ class CartActivity : AppCompatActivity() {
             }
 
         }
+
+    }
+    private fun createOrderQuantityPopup() {
+
+
+        val dialog = Dialog(this@CartActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.popup_quantity)
+
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val cancel: TextView = dialog.findViewById(R.id.cancel)
+
+        val quantityEditText: EditText = dialog.findViewById(R.id.quantity_edit_text)
+        val btnConfirm: Button = dialog.findViewById(R.id.btn_confirm)
+
+
+
+        btnConfirm.setOnClickListener {
+
+            when {
+                TextUtils.isEmpty(quantityEditText.text.toString()) -> {
+                    Toast.makeText(
+                        this@CartActivity,
+                        "Please enter value for quantity",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+//                    quantity = quantityEditText.text.toString().toInt()
+//                    when {
+//                        quantity > selectedMachine.get("availableQty").asInt -> Toast.makeText(
+//                            requireActivity(),
+//                            "Cannot add more than available quantity",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                        else -> {
+//
+//                            totalPrice = quantity * noOfDays * unitPrice
+//                            cartItemPrice.text = "LKR " +  String.format(
+//                                "%.2f",
+//                                totalPrice
+//                            )
+//                            cartQuantityTotal.text = quantity.toString() + " Items to cart"
+//                            dialog.dismiss()
+//                        }
+//                    }
+                }
+            }
+
+        }
+        cancel.setOnClickListener {
+
+
+            dialog.dismiss()
+        }
+
+
+        dialog.show()
 
     }
 

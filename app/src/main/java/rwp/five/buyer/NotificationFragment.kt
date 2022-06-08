@@ -130,14 +130,10 @@ class NotificationFragment : Fragment() {
                         notifications = it.getAsJsonArray("data")
                         recycler_notification.adapter?.notifyDataSetChanged()
 
-                    } else {
+                    } else
                         empty_msg.visibility = View.VISIBLE
-                        Toast.makeText(
-                            requireContext(),
-                            it.get("data").asString,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+
+
 
 
                 }

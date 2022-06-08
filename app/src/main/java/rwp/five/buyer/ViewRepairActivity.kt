@@ -103,6 +103,10 @@ class ViewRepairActivity : AppCompatActivity() {
                     holder.rltStatus.setBackgroundColor(getColor(R.color.ongoing))
                     holder.repairStatus.text = "Ongoing"
                 }
+                "3" -> {
+                    holder.rltStatus.setBackgroundColor(getColor(R.color.pending))
+                    holder.repairStatus.text = "Pending"
+                }
             }
             holder.repairDate.text =
                 repairs[position].asJsonObject.get("createdAt").asString.substring(0, 10)

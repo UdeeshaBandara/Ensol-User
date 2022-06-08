@@ -4,7 +4,9 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +41,7 @@ class OrderFragment : Fragment() {
     var selectedOrderId = ""
     var selectedMachineId = ""
     var isCurrentOrder = true
+    var isPendingOrderSelected = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -176,6 +179,14 @@ class OrderFragment : Fragment() {
             holder.view_machines.setOnClickListener {
                 selectedOrderId = orders.get(position).asJsonObject.get("id").asString
                 orderMachines = orders.get(position).asJsonObject.get("machines").asJsonArray
+                when (orders.get(position).asJsonObject.get("orderStatus").asString) {
+                    "2" -> {
+                        isPendingOrderSelected = false
+                    }
+                    "3" -> {
+                        isPendingOrderSelected = true
+                    }
+                }
                 createOrderMachineDetailsPopup(holder.order_no.text.toString())
             }
         }
@@ -216,7 +227,7 @@ class OrderFragment : Fragment() {
 
         override fun onBindViewHolder(holder: OrderMachineHolder, position: Int) {
 
-            if(isCurrentOrder)
+            if (isCurrentOrder && !isPendingOrderSelected)
                 holder.repair.visibility = View.VISIBLE
             else
                 holder.repair.visibility = View.GONE
@@ -317,6 +328,7 @@ class OrderFragment : Fragment() {
 
     }
 
+
     private fun createRepairSubmitPopup() {
 
 
@@ -380,7 +392,7 @@ class OrderFragment : Fragment() {
 
                         Toast.makeText(
                             requireContext(),
-                           "Repair request sent successfully",
+                            "Repair request sent successfully",
                             Toast.LENGTH_SHORT
                         ).show()
                     } else

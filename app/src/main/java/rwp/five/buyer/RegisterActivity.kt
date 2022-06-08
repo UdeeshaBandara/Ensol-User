@@ -40,9 +40,7 @@ class RegisterActivity : AppCompatActivity() {
             ContextCompat.getColor(this, R.color.red)
 
 
-        back.setOnClickListener {
-            onBackPressed()
-        }
+
 
         btn_login.setOnClickListener {
 

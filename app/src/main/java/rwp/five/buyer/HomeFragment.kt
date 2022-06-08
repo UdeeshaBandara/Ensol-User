@@ -6,12 +6,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.TextView.OnEditorActionListener
@@ -28,7 +26,10 @@ import com.google.gson.JsonParser
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.makeramen.roundedimageview.RoundedImageView
 import dev.joshhalvorson.calendar_date_range_picker.calendar.CalendarPicker
+import io.github.douglasjunior.androidSimpleTooltip.OverlayView
+import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip
 import kotlinx.android.synthetic.main.activity_otp.*
+import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.bottom_sheet_cart.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,8 @@ class HomeFragment : Fragment() {
     var hud: KProgressHUD? = null
     lateinit var selectedDate: TextView
     lateinit var cartItemPrice: TextView
+    lateinit var cartQuantityTotal: TextView
+    lateinit var txtQty: TextView
     lateinit var productBottomSheet: ProductBottomSheet
     var contractStart = ""
     var contractEnd = ""
@@ -310,11 +313,15 @@ class HomeFragment : Fragment() {
             unitPrice = 0.0
             selectedDate = findViewById(R.id.selected_date)!!
             cartItemPrice = findViewById(R.id.cart_item_price)!!
+            cartQuantityTotal = findViewById(R.id.cart_qty)!!
+            txtQty = findViewById(R.id.txt_qty)!!
+
 
             name.text = selectedMachine.get("machineType").asString
             description.text = selectedMachine.get("description").asString
             unitPrice = selectedMachine.get("rentPrice").asDouble
-
+            available_qty.text =
+                selectedMachine.get("availableQty").asString + " Machine(s) available in stock"
             totalPrice = quantity * noOfDays * unitPrice
 
             cart_qty.text = "$quantity Items to cart"
@@ -327,6 +334,18 @@ class HomeFragment : Fragment() {
                 "%.2f",
                 totalPrice
             )
+
+            SimpleTooltip.Builder(requireActivity())
+                .anchorView(txt_qty)
+                .text("Tap here to change quantity")
+                .gravity(Gravity.TOP)
+                .highlightShape(OverlayView.HIGHLIGHT_SHAPE_OVAL)
+
+                .animated(true)
+                .animationDuration(2000)
+                .transparentOverlay(true)
+                .build()
+                .show()
 
 
             val jsonArray =
@@ -359,7 +378,7 @@ class HomeFragment : Fragment() {
                     "%.2f",
                     totalPrice
                 )
-                cart_qty.text = quantity.toString() + " Items to cart"
+                cartQuantityTotal.text = quantity.toString() + " Items to cart"
             }
             plus.setOnClickListener {
                 if (quantity < selectedMachine.get("availableQty").asInt)
@@ -370,31 +389,77 @@ class HomeFragment : Fragment() {
                     "%.2f",
                     totalPrice
                 )
-                cart_qty.text = quantity.toString() + " Items to cart"
+                cartQuantityTotal.text = quantity.toString() + " Items to cart"
             }
-            txt_qty.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    charSequence: CharSequence,
-                    i: Int,
-                    i1: Int,
-                    i2: Int
-                ) {
-                }
 
-                override fun onTextChanged(
-                    charSequence: CharSequence,
-                    i: Int,
-                    i1: Int,
-                    i2: Int
-                ) {
-
-                }
-
-                override fun afterTextChanged(editable: Editable) {}
-            })
+//            lnr_qty.setOnClickListener { createOrderQuantityPopup() }
+            txt_qty.setOnClickListener { createOrderQuantityPopup() }
 
         }
     }
+
+    private fun createOrderQuantityPopup() {
+
+
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.popup_quantity)
+
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val cancel: TextView = dialog.findViewById(R.id.cancel)
+
+        val quantityEditText: EditText = dialog.findViewById(R.id.quantity_edit_text)
+        val btnConfirm: Button = dialog.findViewById(R.id.btn_confirm)
+
+
+
+        btnConfirm.setOnClickListener {
+
+            when {
+                TextUtils.isEmpty(quantityEditText.text.toString()) -> {
+                    Toast.makeText(
+                        requireActivity(),
+                        "Please enter value for quantity",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+                    quantity = quantityEditText.text.toString().toInt()
+                    when {
+                        quantity > selectedMachine.get("availableQty").asInt -> Toast.makeText(
+                            requireActivity(),
+                            "Cannot add more than available quantity",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        else -> {
+
+                            totalPrice = quantity * noOfDays * unitPrice
+                            cartItemPrice.text = "LKR " + String.format(
+                                "%.2f",
+                                totalPrice
+                            )
+                            cartQuantityTotal.text = quantity.toString() + " Items to cart"
+                            txtQty.text = quantity.toString()
+                            dialog.dismiss()
+                        }
+                    }
+                }
+            }
+
+        }
+        cancel.setOnClickListener {
+
+
+            dialog.dismiss()
+        }
+
+
+        dialog.show()
+
+    }
+
 
     fun showDatePicker() {
 
@@ -528,6 +593,7 @@ class HomeFragment : Fragment() {
                     "Your product has been added to cart",
                     Toast.LENGTH_LONG
                 ).show()
+                productBottomSheet.dismiss()
 
 
             }

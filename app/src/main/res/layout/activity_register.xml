@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
 
 
     <ImageView
@@ -17,17 +17,7 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/top_curve" />
 
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:padding="15dp"
-        android:src="@drawable/back" />
+
 
     <ImageView
         android:id="@+id/logo"

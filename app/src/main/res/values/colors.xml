@@ -9,6 +9,9 @@
     <color name="complete">#4CAF50</color>
     <color name="ongoing">#3F51B5</color>
     <color name="pending">#FF5722</color>
+    <color name="simpletooltip_background">#CC000000</color>
+    <color name="simpletooltip_text">@android:color/white</color>
+    <color name="simpletooltip_arrow">#CC000000</color>
 
 
 </resources>
