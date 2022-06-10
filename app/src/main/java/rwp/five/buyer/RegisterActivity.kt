@@ -143,9 +143,12 @@ class RegisterActivity : AppCompatActivity() {
 
 
                     if (it.get("status").asBoolean) {
-                        tinyDB.putString("token", it.get("accessToken").asString)
-                        tinyDB.putBoolean("isLogged", true)
-                        startActivity(Intent(applicationContext, Main::class.java))
+                        Toast.makeText(
+                            this@RegisterActivity,
+                           "Registration successful, Please login",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
                         finishAffinity()
                     } else
                         Toast.makeText(

@@ -10,7 +10,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonArray
@@ -45,7 +44,7 @@ class ViewRepairActivity : AppCompatActivity() {
 
         recycler_repairs.adapter = CategoryAdapter()
         recycler_repairs.layoutManager = LinearLayoutManager(
-         this,
+            this,
             LinearLayoutManager.VERTICAL,
             false
         )
@@ -85,37 +84,42 @@ class ViewRepairActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: RepairItemHolder, position: Int) {
 
-            holder.repairId.text = "Repair #ENR" + repairs[position].asJsonObject.get("id").asString
-            holder.orderNo.text =
-                "Order #ZES" + repairs[position].asJsonObject.get("orderId").asString
-            holder.machine.text =repairs[position].asJsonObject.get("machine").asJsonObject.get("machineType").asString
+            try {
+                holder.repairId.text =
+                    "Repair #ENR" + repairs[position].asJsonObject.get("id").asString
+                holder.orderNo.text =
+                    "Order #ZES" + repairs[position].asJsonObject.get("orderId").asString
+                holder.machine.text =
+                    repairs[position].asJsonObject.get("machine").asJsonObject.get("machineType").asString
 
-            when (repairs[position].asJsonObject.get("status").asString) {
-                "0" -> {
-                    holder.rltStatus.setBackgroundColor(getColor(R.color.cancel))
-                    holder.repairStatus.text = "Cancelled"
+                when (repairs[position].asJsonObject.get("status").asString) {
+                    "0" -> {
+                        holder.rltStatus.setBackgroundColor(getColor(R.color.cancel))
+                        holder.repairStatus.text = "Cancelled"
+                    }
+                    "1" -> {
+                        holder.rltStatus.setBackgroundColor(getColor(R.color.complete))
+                        holder.repairStatus.text = "Completed"
+                    }
+                    "2" -> {
+                        holder.rltStatus.setBackgroundColor(getColor(R.color.ongoing))
+                        holder.repairStatus.text = "Ongoing"
+                    }
+                    "3" -> {
+                        holder.rltStatus.setBackgroundColor(getColor(R.color.pending))
+                        holder.repairStatus.text = "Pending"
+                    }
                 }
-                "1" -> {
-                    holder.rltStatus.setBackgroundColor(getColor(R.color.complete))
-                    holder.repairStatus.text = "Completed"
-                }
-                "2" -> {
-                    holder.rltStatus.setBackgroundColor(getColor(R.color.ongoing))
-                    holder.repairStatus.text = "Ongoing"
-                }
-                "3" -> {
-                    holder.rltStatus.setBackgroundColor(getColor(R.color.pending))
-                    holder.repairStatus.text = "Pending"
-                }
+                holder.repairDate.text =
+                    repairs[position].asJsonObject.get("createdAt").asString.substring(0, 10)
+                holder.description.text = repairs[position].asJsonObject.get("description").asString
+
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            holder.repairDate.text =
-                repairs[position].asJsonObject.get("createdAt").asString.substring(0, 10)
-            holder.description.text = repairs[position].asJsonObject.get("description").asString
-
-
 
         }
-
     }
 
     private fun getAllRepairs() {
@@ -139,6 +143,12 @@ class ViewRepairActivity : AppCompatActivity() {
                     if (it.get("status").asBoolean) {
 
                         repairs = it.getAsJsonArray("data")
+                        if (repairs.size() == 0)
+                            Toast.makeText(
+                                this@ViewRepairActivity,
+                                "No repair requests available!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         recycler_repairs.adapter?.notifyDataSetChanged()
 
                     } else
@@ -158,6 +168,7 @@ class ViewRepairActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun showHUD() {
         if (hud!!.isShowing) {
             hud!!.dismiss()

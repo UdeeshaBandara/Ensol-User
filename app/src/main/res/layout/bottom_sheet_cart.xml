@@ -138,17 +138,16 @@
                 <TextView
 
                     android:id="@+id/txt_qty"
-                    android:layout_width="match_parent"
+                    android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:paddingHorizontal="20dp"
                     android:background="@drawable/quantity_background"
                     android:ellipsize="end"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="center"
-                    android:inputType="number"
                     android:maxLength="4"
                     android:maxLines="1"
+                    android:paddingHorizontal="5dp"
                     android:text="1"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
