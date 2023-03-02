@@ -220,6 +220,8 @@ class CartActivity : AppCompatActivity() {
                             }
                         }
                     }
+
+                    //adding sample PR
                     total -= ((cartItems[position].productPrice!!).times(cartItems[position].quantity!!)).times(
                         getNoOfDays(
                             cartItems[position].productContractEnd!!.toLong(),
